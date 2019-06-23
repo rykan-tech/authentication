@@ -1,0 +1,25 @@
+# Gitlab config
+stages:
+  - build
+  - test # Test & lint
+  - document # Generate documentation
+  - deploy # Deploy documentation
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+
+# Job 0: Build (npm install)
+npm-install:
+  stage: build
+  image: node:lts
+  script:
+    - yarn install
+
+# Job 1: lint
+ts-lint:
+  stage: lint
+  image: node:lts
+  script:
+    - yarn run tslint --project ./login --config ./tslint.json
