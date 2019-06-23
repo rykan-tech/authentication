@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-login
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-login
+  template:
+    metadata:
+      labels:
+        editor: vscode
+      name: Login
+    spec:
+      containers:
+      - name: auth-login-service
+        image: rykan/auth-login
+        ports:
+          - containerPort: 2000
+      - name: auth-login-db
+        image: postgres
+        ports:
+          - containerPort: 5432
