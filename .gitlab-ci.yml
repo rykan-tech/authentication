@@ -19,7 +19,7 @@ npm-install:
 
 # Job 1: lint
 ts-lint:
-  stage: lint
+  stage: test
   image: node:lts
   script:
     - yarn run tslint --project ./login --config ./tslint.json
