@@ -1,0 +1,9 @@
+# File to make docker image
+
+RYKAN_BASE = rykan
+RYKAN_MACROSERVICE = auth
+RYKAN_MICROSERVICE = login
+RYKAN_IMAGE_NAME = $(RYKAN_BASE)/$(RYKAN_MACROSERVICE)-$(RYKAN_MICROSERVICE)
+
+image:
+	docker build -t $(RYKAN_IMAGE_NAME) .

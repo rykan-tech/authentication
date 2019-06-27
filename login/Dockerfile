@@ -1,5 +1,5 @@
 # Dockerfile for login microservice
-FROM node:lts
+FROM node:lts as builder
 
 # Change user
 RUN useradd -ms /bin/bash login-service
@@ -26,6 +26,9 @@ RUN yarn run build
 # Remove global deps
 RUN yarn global remove typescript
 
+
+# Use a separate container to run
+FROM node:lts-alpine
 # Env vars
 ENV NODE_ENV=production
 
@@ -33,4 +36,4 @@ ENV NODE_ENV=production
 EXPOSE 2000
 
 # Start on command
-CMD [ "yarn", "start" ]
+CMD [ "node", "./lib/index.js" ]
