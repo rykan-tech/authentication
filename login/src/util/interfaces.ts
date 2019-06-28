@@ -21,3 +21,12 @@ export interface DBConfig {
 	development: DBConfigObject;
 	[key: string]: DBConfigObject; // For any other environments
 }
+
+/**
+ * Database Schema
+ */
+export interface DBSchema {
+	username: string;
+	password: string;
+	id: string;
+}

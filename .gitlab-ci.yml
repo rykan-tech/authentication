@@ -11,7 +11,7 @@ cache:
     - node_modules/
 
 # Job 0: Build (npm install)
-npm-install:
+yarn-install:
   stage: build
   image: node:lts
   script:
