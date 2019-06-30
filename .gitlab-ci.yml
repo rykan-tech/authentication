@@ -24,8 +24,8 @@ ts-lint:
   script:
     - yarn run tslint --project ./login --config ./tslint.json
 
-mocha:
+login.mocha:
   stage: test
   image: node:lts
   script:
-    - yarn test
+    - cd login && yarn test
