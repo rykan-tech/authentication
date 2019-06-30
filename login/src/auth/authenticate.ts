@@ -2,32 +2,13 @@
  * Issues a JSON Web Token (JWT)
  */
 import pg from "pg";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import issueJWT from "./issue";
+import validatePassword from "./password";
 import logger from "../util/logger";
 import { DBSchema } from "../util/interfaces";
 
-const debug = require("debug")("rykan:jwt");
-
-function issueJWT(user: DBSchema) {
-	debug("Singing a new JWT...");
-	// generate JWT
-	return jwt.sign({
-		id: user.id,
-		username: user.username,
-	}, "oaosfdhiuawesdhfiu", { expiresIn: 60 * 15 });
-
-}
-
-function validatePassword(password: string, hash: string): Promise<boolean> {
-	return new Promise((resolve, reject) => {
-		logger.debug("Checking password with has from db...");
-		bcrypt.compare(password, hash, (err, res) => {
-			if (err) { reject(err); }
-			resolve(res);
-		});
-	});
-}
+const debug = require("debug")("rykan:auth");
 
 /**
  * Returned in the promise when authenticating in jwt/issue.ts
@@ -37,6 +18,15 @@ export interface Authenticated {
 	jwt?: string;
 }
 
+/**
+ * Authenticates a user, by retrieveing their password hash from the database
+ * and comparing it to the submitted password, using bcrypt
+ * Returns a signed JSON Web Token for the user
+ * @param  {string} username Username to check
+ * @param  {string} password Password to check
+ * @param  {pg.Pool} database PostgreSQL Database pool
+ * @returns Promise with boolean of if authenticated, and the JWT (if applicable)
+ */
 export default (username: string, password: string, database: pg.Pool): Promise<Authenticated> => {
 	return new Promise((resolve, reject) => {
 		// Stage 1: QUERY
@@ -46,7 +36,7 @@ export default (username: string, password: string, database: pg.Pool): Promise<
 				username,
 			],
 			(err, res) => {
-				if (err) { reject(err); }
+				if (err) { reject(err); return; }
 				if (res.rows.length <= 0) {
 					logger.error("User was not found!");
 					resolve({

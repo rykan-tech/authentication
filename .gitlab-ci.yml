@@ -17,9 +17,15 @@ yarn-install:
   script:
     - yarn install
 
-# Job 1: lint
+# Job 1: test
 ts-lint:
   stage: test
   image: node:lts
   script:
     - yarn run tslint --project ./login --config ./tslint.json
+
+mocha:
+  stage: test
+  image: node:lts
+  script:
+    - yarn test

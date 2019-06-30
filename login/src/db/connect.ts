@@ -8,6 +8,10 @@ import * as constants from "../util/constants";
 
 const debug = require("debug")("rykan:database");
 
+/**
+ * Loads a database config from private/database.json
+ * @returns DBConfig: Configuration object with the database environments.
+ */
 function loadDBConfig(): interfaces.DBConfig {
 	debug("Reading DB config file...");
 	// Load from file
@@ -18,7 +22,11 @@ function loadDBConfig(): interfaces.DBConfig {
 	return config;
 }
 
-export default () => {
+/**
+ * Creates a PostgreSQL Pool to connect to the database, based on a conifig
+ * @returns PostgreSQL Pool, used to make connections to the database
+ */
+export default (): Pool => {
 	debug("Creating DB Pool...");
 	// Load config
 	let config: interfaces.DBConfig;
@@ -31,13 +39,19 @@ export default () => {
 	}
 
 	// Create pool
-	debug("Got config.  Create Pool...");
-	const env = process.env.NODE_ENV === "development" ? config.development : config.production;
+	debug("Got config.  Creating Pool...");
+	const environment = process.env.RYKAN_DB_ENV ?
+		process.env.RYKAN_DB_ENV : (process.env.NODE_ENV === "development" ? "development" : "production");
+	const dbConfig = config[environment];
+	if (typeof dbConfig === "undefined") {
+		debug(`Asked for a non existant DB Environment of ${environment}.`);
+		throw new Error(`None existant database environment specified (${environment})`);
+	}
 	// NOTE: Connection to DB is NOT tested here.
 	return new Pool({
-		user: env.username,
-		password: env.password,
-		database: env.db_name,
-		host: env.host,
+		user: dbConfig.username,
+		password: dbConfig.password,
+		database: dbConfig.db_name,
+		host: dbConfig.host,
 	});
 };

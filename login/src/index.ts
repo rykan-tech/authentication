@@ -8,7 +8,7 @@ import bodyParser from "body-parser";
 import * as constants from "./util/constants";
 import logger from "./util/logger";
 import { connect as db_connect } from "./db";
-import authenticate from "./jwt";
+import authenticate from "./auth";
 
 const app = express();
 
@@ -34,7 +34,7 @@ app.listen(constants.PORT, () => {
 // We define our single route here.
 app.post("/", (req, res, next) => {
 	logger.info("Authenticating....");
-	// Validate
+	// Validate, are all fields present?
 	if (!req.body.hasOwnProperty("username") || !req.body.hasOwnProperty("password")) {
 		logger.error("Missing field in a request");
 		res.statusCode = 422;
@@ -42,7 +42,8 @@ app.post("/", (req, res, next) => {
 		res.end();
 		return;
 	}
-	// Fields are there, ISSUE
+
+	// Fields are there, Authenticate and issue a JWT.
 	const jwt = authenticate(req.body.username, req.body.password, database)
 		.then((authenticated) => {
 			if (authenticated.authenticated) {
@@ -57,5 +58,5 @@ app.post("/", (req, res, next) => {
 				res.end();
 			}
 		})
-		.catch((err) => next(err));
+		.catch(next);
 });
