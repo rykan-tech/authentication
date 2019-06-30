@@ -1,6 +1,6 @@
 /**
  * Index of JWT
  */
-import imp_issue from "./issue";
+import authenticate from "./authenticate";
 
-export const issue = imp_issue;
+export default authenticate;

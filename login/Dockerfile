@@ -29,6 +29,7 @@ RUN yarn global remove typescript
 
 # Use a separate container to run
 FROM node:lts-alpine
+
 # Env vars
 ENV NODE_ENV=production
 

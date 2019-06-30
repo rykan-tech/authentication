@@ -8,7 +8,7 @@ import bodyParser from "body-parser";
 import * as constants from "./util/constants";
 import logger from "./util/logger";
 import { connect as db_connect } from "./db";
-import { issue as issueJWT } from "./jwt";
+import authenticate from "./jwt";
 
 const app = express();
 
@@ -33,7 +33,7 @@ app.listen(constants.PORT, () => {
 
 // We define our single route here.
 app.post("/", (req, res, next) => {
-	logger.info("Issuing a new JWT....");
+	logger.info("Authenticating....");
 	// Validate
 	if (!req.body.hasOwnProperty("username") || !req.body.hasOwnProperty("password")) {
 		logger.error("Missing field in a request");
@@ -43,11 +43,19 @@ app.post("/", (req, res, next) => {
 		return;
 	}
 	// Fields are there, ISSUE
-	const jwt = issueJWT(req.body.username, req.body.password, database)
-		.catch((err) => next(err))
-		.then((jwt) => {
-			res.statusCode = 200;
-			res.send(jwt);
-			res.end();
-		});
+	const jwt = authenticate(req.body.username, req.body.password, database)
+		.then((authenticated) => {
+			if (authenticated.authenticated) {
+				logger.info("Authenticated successfully!");
+				res.statusCode = 200;
+				res.send(authenticated.jwt);
+				res.end();
+			} else {
+				logger.info("Authenticated unsuccessfully");
+				res.statusCode = 401;
+				res.send("Invalid username or password");
+				res.end();
+			}
+		})
+		.catch((err) => next(err));
 });
