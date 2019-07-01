@@ -30,7 +30,7 @@ db.login.build:
   stage: prepare
   image: postgres:latest
   script:
-    - psql -U $POSTGRES_USER -h "postgres" -1 -f login/ci/Database.sql
+    - psql -U "$POSTGRES_USER" -d "$POSTPOSTGRES_DB" -h "postgres" -1 -f login/ci/Database.sql
 
 
 # Job 1: test
