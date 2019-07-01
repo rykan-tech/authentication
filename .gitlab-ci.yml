@@ -26,11 +26,13 @@ yarn-install:
   image: node:lts
   script:
     - yarn install
+
 db.login.build:
   stage: prepare
   image: postgres:latest
   script:
-    - psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -h "postgres" -1 -f login/ci/Database.sql
+    - psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -h "postgres" -1 -f login/ci/database.create.sql
+    - psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -h "postgres" -1 -f login/ci/database.insert.sql
 
 
 # Job 1: test

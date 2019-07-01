@@ -16,6 +16,8 @@ const debug = require("debug")("rykan:auth");
 export interface Authenticated {
 	authenticated: boolean; // If false, username or password was wrong
 	jwt?: string;
+	userExists?: boolean;
+	passwordCorrect?: boolean;
 }
 
 /**
@@ -41,6 +43,7 @@ export default (username: string, password: string, database: pg.Pool): Promise<
 					logger.error("User was not found!");
 					resolve({
 						authenticated: false,
+						userExists: false,
 					});
 					return;
 				}
@@ -58,6 +61,7 @@ export default (username: string, password: string, database: pg.Pool): Promise<
 							logger.debug("Password is incorrect!");
 							resolve({
 								authenticated: false,
+								passwordCorrect: false,
 							});
 						}
 					});

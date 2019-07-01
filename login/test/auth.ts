@@ -1,11 +1,16 @@
-import { validatePassword, issueJWT } from "../src/auth";
+import authenticate, { validatePassword, issueJWT } from "../src/auth";
+import connect from "../src/db/connect";
 
-import { expect } from "chai";
+import { expect, assert } from "chai";
 
 import bcrypt from "bcrypt";
+import { Pool } from "pg";
+import { AssertionError } from "assert";
+
 const username = "test_user";
 const password = "abc123$Rykan&";
 let passwordHash: string;
+let database: Pool;
 
 describe("Authentication logic", () => {
 	before((done) => {
@@ -14,6 +19,11 @@ describe("Authentication logic", () => {
 			passwordHash = hash;
 			done();
 		});
+	});
+
+	before((done) => {
+		database = connect();
+		done();
 	});
 
 	describe("Password auth", () => {
@@ -43,6 +53,43 @@ describe("Authentication logic", () => {
 				password,
 				id: "some-uuid",
 			})).to.be.string;
+		});
+	});
+
+	describe("Full Authentication logic", () => {
+		it("should fail to authenticate a non-existant user", async () => {
+			const result = await authenticate("test123aljshasdf", "somepwd", database);
+			expect(result).to.have.property("authenticated", false);
+			expect(result).to.have.property("userExists", false);
+		});
+
+		it("should sucessfully authenticate a user and provide a JWT", async () => {
+			const result = await authenticate(username, password, database);
+			expect(result).to.have.property("authenticated", true);
+			expect(result).to.have.property("jwt");
+		});
+
+		it("should fail to authenticate a user with the wrong password", async () => {
+			const result = await authenticate(username, password + "notCorrect", database);
+			expect(result).to.have.property("authenticated", false);
+			expect(result).to.have.property("passwordCorrect", false);
+		});
+
+		it("should gracefully fail if there's an error querying the database", (done) => {
+			const malformedDb = new Pool({
+				user: "not_a_user",
+				password: "not_a_password",
+				host: "",
+			});
+			authenticate(username, password + "notCorrect", malformedDb)
+				.then(() => {
+					done(new Error("Expected method to reject"));
+				})
+				.catch((err) => {
+					assert.isDefined(err);
+					done();
+				})
+				.catch(done);
 		});
 	});
 });

@@ -98,16 +98,6 @@ CREATE TABLE userlogins (
 
 ALTER TABLE userlogins OWNER TO postgres;
 
---
--- TOC entry 2107 (class 0 OID 24590)
--- Dependencies: 182
--- Data for Name: userlogins; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY userlogins (username, password, id) FROM stdin;
-test_user	$2b$12$fzgBiFE.TY1yHcbypiN/aeoLVuJfZKunV/bRxQ1MdS5wy2EsoDxdW	d2c6c3cf-a8cf-4d55-9088-f2ad346fb6f4
-\.
-
 
 --
 -- TOC entry 1992 (class 2606 OID 24597)
