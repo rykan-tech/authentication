@@ -1,0 +1,9 @@
+{
+  "ci": {
+    "host": "postgres",
+    "port": 5433,
+    "username": "rykan-testing",
+    "password": "",
+    "db_name": "users"
+  }
+}

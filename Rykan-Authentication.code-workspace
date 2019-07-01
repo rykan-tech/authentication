@@ -2,9 +2,14 @@
 	"folders": [
 		{
 			"path": "."
-		}
+		},
 	],
 	"settings": {
-		
+		"mochaExplorer.files": "login/test/auth.ts",
+		"mochaExplorer.require": "ts-node/register",
+		"mochaExplorer.env": {
+			"TS_NODE_PROJECT": "login/tsconfig.json"
+		},
+		"coverage-gutters.coverageReportFileName": "login/coverage/index.html"
 	}
 }

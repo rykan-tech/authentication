@@ -1,9 +1,19 @@
 # Gitlab config
 stages:
-  - build
+  - prepare
   - test # Test & lint
   - document # Generate documentation
   - deploy # Deploy documentation
+
+# Database
+services:
+  - postgres:latest
+
+variables:
+  RYKAN_DB_ENVIRONMENT: ci
+  POSTGRES_DB: users
+  POSTGRES_USER: rykan-testing
+  POSTGRES_PASSWORD: ""
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
@@ -12,10 +22,16 @@ cache:
 
 # Job 0: Build (npm install)
 yarn-install:
-  stage: build
+  stage: preapre
   image: node:lts
   script:
     - yarn install
+db.login.build:
+  stage: prepare
+  image: postgres:latest
+  script:
+    - psql -U $POSTGRES_USER -1 -f login/ci/Database.sql
+
 
 # Job 1: test
 ts-lint:
