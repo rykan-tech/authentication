@@ -10,7 +10,7 @@ services:
   - postgres:latest
 
 variables:
-  RYKAN_DB_ENVIRONMENT: ci
+  RYKAN_DB_ENV: ci
   POSTGRES_DB: users
   POSTGRES_USER: rykan-testing
   POSTGRES_PASSWORD: ""
