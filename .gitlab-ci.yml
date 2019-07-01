@@ -45,5 +45,7 @@ ts-lint:
 login.mocha:
   stage: test
   image: node:lts
+  before_script:
+    - cp ./login/ci/database.json ./login/private/database.json
   script:
     - cd login && yarn test
