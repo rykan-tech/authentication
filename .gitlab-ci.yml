@@ -22,7 +22,7 @@ cache:
 
 # Job 0: Build (npm install)
 yarn-install:
-  stage: preapre
+  stage: prepare
   image: node:lts
   script:
     - yarn install
