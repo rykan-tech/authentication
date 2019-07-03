@@ -2,7 +2,6 @@
  * Issues a JSON Web Token (JWT)
  */
 import pg from "pg";
-import bcrypt from "bcrypt";
 import issueJWT from "./issue";
 import validatePassword from "./password";
 import logger from "../util/logger";
