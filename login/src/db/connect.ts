@@ -9,32 +9,19 @@ import * as constants from "../util/constants";
 const debug = require("debug")("rykan:database");
 
 /**
- * Loads a database config from private/database.json
- * @returns DBConfig: Configuration object with the database environments.
- */
-function loadDBConfig(): interfaces.DBConfig {
-	debug("Reading DB config file...");
-	// Load from file
-	const rawData = readFileSync(constants.DB_CONFIG_PATH).toString();
-	// Parse
-	debug("Parsing JSON...");
-	const config: interfaces.DBConfig = JSON.parse(rawData);
-	return config;
-}
-
-/**
  * Creates a PostgreSQL Pool to connect to the database, based on a conifig
  * @returns PostgreSQL Pool, used to make connections to the database
  */
 export default (): Pool => {
 	debug("Creating DB Pool...");
+	debug("Reading DB config file...");
 	// Load config
 	let config: interfaces.DBConfig;
 	try {
-		config = loadDBConfig();
+		config = require(constants.DB_CONFIG_PATH);
 	} catch (err) {
 		// Propogate up a scoop
-		debug("ERROR connecting!");
+		debug("ERROR reading config files!");
 		throw err;
 	}
 
