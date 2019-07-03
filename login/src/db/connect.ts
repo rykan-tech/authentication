@@ -2,7 +2,6 @@
  * Allows us to connect to the database
  */
 import { Pool } from "pg";
-import { readFileSync } from "fs";
 import * as interfaces from "../util/interfaces";
 import * as constants from "../util/constants";
 
