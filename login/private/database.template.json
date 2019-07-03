@@ -12,5 +12,12 @@
     "username": "",
     "password": "",
     "db_name": "users"
+  },
+  "test": {
+    "host": "0.0.0.0",
+    "port": 1234,
+    "username": "",
+    "password": "",
+    "db_name": "users"
   }
 }
