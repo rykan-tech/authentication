@@ -26,8 +26,7 @@ export default (): Pool => {
 
 	// Create pool
 	debug("Got config.  Creating Pool...");
-	const environment = process.env.RYKAN_DB_ENV ?
-		process.env.RYKAN_DB_ENV : (process.env.NODE_ENV === "development" ? "development" : "production");
+	const environment = process.env.RYKAN_DB_ENV || (process.env.NODE_ENV === "development" ? "development" : "production");
 	const dbConfig = config[environment];
 	if (typeof dbConfig === "undefined") {
 		debug(`Asked for a non existant DB Environment of ${environment}.`);
