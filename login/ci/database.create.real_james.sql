@@ -33,7 +33,7 @@ CREATE TABLE public.accounts
 (
     username character varying(320) COLLATE pg_catalog."default" NOT NULL,
     password character(60) COLLATE pg_catalog."default" NOT NULL,
-    user_id uuid NOT NULL,
+    user_id uuid NOT NULL PRIMARY KEY,
     email character varying(320) COLLATE pg_catalog."default" NOT NULL,
     phone character varying(35) COLLATE pg_catalog."default",
     fullname character varying(320) COLLATE pg_catalog."default" NOT NULL DEFAULT "Joe Bloggs",
