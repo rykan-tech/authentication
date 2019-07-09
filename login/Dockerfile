@@ -2,22 +2,24 @@
 FROM node:lts as builder
 
 # Change user
-RUN useradd -ms /bin/bash login-service
-USER login-service
+RUN useradd -ms /bin/bash login-service-builder
+USER login-service-builder
 
 # Change working dir
 RUN mkdir ~/login
-WORKDIR /home/login-service/login
+WORKDIR /home/login-service-builder/login
 
 # Copy code
-COPY ./ ./
+COPY ./package.json ./package.json
+COPY ./tsconfig.json ./tsconfig.json
+COPY ./src ./src/
+COPY ./private ./private/
 
 # Global deps, for building
 RUN yarn global add typescript
 
 # Build code
 # Get ready
-ARG CACHEBUST=1
 RUN yarn install
 
 # Build
@@ -30,11 +32,23 @@ RUN yarn global remove typescript
 # Use a separate container to run
 FROM node:lts-alpine
 
-# Env vars
-ENV NODE_ENV=production
+# Change user
+RUN addgroup -S login-service-group && adduser -S login-service -G login-service-group
+
+# COPY
+COPY --from=builder /home/login-service-builder/login /home/login-service/login/
+
+WORKDIR /home/login-service/login
+
+RUN chown :login-service-group /home/login-service/login && mkdir logs
+
+USER login-service
 
 # Expose the port
 EXPOSE 2000
+
+# Env vars
+ENV NODE_ENV=production
 
 # Start on command
 CMD [ "node", "./lib/index.js" ]

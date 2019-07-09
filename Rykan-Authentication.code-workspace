@@ -10,6 +10,9 @@
 		"mochaExplorer.env": {
 			"TS_NODE_PROJECT": "login/tsconfig.json"
 		},
-		"coverage-gutters.coverageReportFileName": "login/coverage/index.html"
+		"coverage-gutters.coverageReportFileName": "login/coverage/index.html",
+		"workbench.colorCustomizations": {
+			"tab.unfocusedActiveBorder": "#fff0"
+		}
 	}
 }

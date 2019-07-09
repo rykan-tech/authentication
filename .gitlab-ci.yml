@@ -49,3 +49,12 @@ login.mocha:
     - cp ./login/ci/database.json ./login/private/database.json
   script:
     - cd login && yarn test
+
+# Deploy to GitLab registry
+login.docker:
+  stage: deploy
+  image: docker:latest
+  script:
+    - cd login
+    - docker build -t registry.gitlab.com/rykan/authentication/login .
+    - docker push registry.gitlab.com/rykan/authentication/login
