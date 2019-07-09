@@ -2,7 +2,7 @@
 
 -- DROP DATABASE user_data;
 
-CREATE DATABASE user_data
+CREATE DATABASE users
     WITH 
     OWNER = postgres
     ENCODING = 'UTF8'
@@ -10,6 +10,8 @@ CREATE DATABASE user_data
     LC_CTYPE = 'English_United States.1252'
     TABLESPACE = pg_default
     CONNECTION LIMIT = -1;
+
+ALTER DATABASE users OWNER TO "login-server-ci";
 
 -- SCHEMA: public
 
