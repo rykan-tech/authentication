@@ -86,17 +86,17 @@ SET default_with_oids = false;
 
 --
 -- TOC entry 182 (class 1259 OID 24590)
--- Name: userlogins; Type: TABLE; Schema: public; Owner: postgres
+-- Name: accounts; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE userlogins (
+CREATE TABLE accounts (
     username text,
     password text,
     id uuid NOT NULL
 );
 
 
-ALTER TABLE userlogins OWNER TO postgres;
+ALTER TABLE accounts OWNER TO postgres;
 
 
 --
@@ -104,7 +104,7 @@ ALTER TABLE userlogins OWNER TO postgres;
 -- Name: primaries; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY userlogins
+ALTER TABLE ONLY accounts
     ADD CONSTRAINT primaries PRIMARY KEY (id);
 
 
@@ -123,13 +123,13 @@ GRANT ALL ON SCHEMA public TO PUBLIC;
 --
 -- TOC entry 2118 (class 0 OID 0)
 -- Dependencies: 182
--- Name: userlogins; Type: ACL; Schema: public; Owner: postgres
+-- Name: accounts; Type: ACL; Schema: public; Owner: postgres
 --
 
-REVOKE ALL ON TABLE userlogins FROM PUBLIC;
-REVOKE ALL ON TABLE userlogins FROM postgres;
-GRANT ALL ON TABLE userlogins TO postgres;
-GRANT SELECT ON TABLE userlogins TO "login-server-ci";
+REVOKE ALL ON TABLE accounts FROM PUBLIC;
+REVOKE ALL ON TABLE accounts FROM postgres;
+GRANT ALL ON TABLE accounts TO postgres;
+GRANT SELECT ON TABLE accounts TO "login-server-ci";
 
 
 -- Completed on 2019-07-01 19:11:36
