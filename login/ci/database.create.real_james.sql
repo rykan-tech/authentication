@@ -41,7 +41,7 @@ CREATE TABLE public.accounts
     -- phone character varying(35) COLLATE pg_catalog."default",
     -- fullname character varying(320) COLLATE pg_catalog."default" NOT NULL,
 	-- birth date NOT NULL,
-    CONSTRAINT uniqueness UNIQUE (username, user_id, email)
+    CONSTRAINT uniqueness UNIQUE (username, user_id)
 )
 WITH (
     OIDS = FALSE
