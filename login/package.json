@@ -10,8 +10,8 @@
     "build": "tsc",
     "start": "node ./lib/index.js",
     "nodemon": "cross-env DEBUG=rykan:* nodemon --inspect ./lib/index.js",
-    "test": "mocha -r ts-node/register test/**/*.ts",
-    "coverage": "nyc mocha -r ts-node/register test/**/*.ts"
+    "test": "cross-env TS_NODE_FILES=true mocha -r ts-node/register test/**/*.ts",
+    "coverage": "cross-env TS_NODE_FILES=true nyc mocha -r ts-node/register test/**/*.ts"
   },
   "nyc": {
     "include": [

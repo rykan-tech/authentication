@@ -8,7 +8,10 @@
 		"mochaExplorer.files": "login/test/*.ts",
 		"mochaExplorer.require": "ts-node/register",
 		"mochaExplorer.env": {
-			"TS_NODE_PROJECT": "login/tsconfig.json"
+			"TS_NODE_PROJECT": "login/tsconfig.json",
+			"TS_NODE_FILES": "true",
+			"NODE_ENV": "test",
+			"RYKAN_DB_ENV": "development"
 		},
 		"coverage-gutters.coverageReportFileName": "login/coverage/index.html",
 		"workbench.colorCustomizations": {
