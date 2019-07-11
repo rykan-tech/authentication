@@ -5,10 +5,8 @@ import { expect, assert } from "chai";
 
 import bcrypt from "bcrypt";
 import { Pool } from "pg";
-import { AssertionError } from "assert";
+import { username, password } from "./constants";
 
-const username = "test_user";
-const password = "abc123$Rykan&";
 let passwordHash: string;
 let database: Pool;
 
