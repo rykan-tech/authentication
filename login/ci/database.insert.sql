@@ -10,9 +10,9 @@
 --
 -- TOC entry 2107 (class 0 OID 24590)
 -- Dependencies: 182
--- Data for Name: accounts; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: logins; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 \connect users
 
-INSERT INTO accounts (username, password, id) VALUES ('test_user', '$2b$12$fzgBiFE.TY1yHcbypiN/aeoLVuJfZKunV/bRxQ1MdS5wy2EsoDxdW', '969ee333-62d8-45bf-9f4c-82e55e5050a3');
+INSERT INTO logins (username, password, id) VALUES ('test_user', '$2b$12$fzgBiFE.TY1yHcbypiN/aeoLVuJfZKunV/bRxQ1MdS5wy2EsoDxdW', '969ee333-62d8-45bf-9f4c-82e55e5050a3');

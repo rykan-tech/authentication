@@ -33,7 +33,7 @@ export default (username: string, password: string, database: pg.Pool): Promise<
 		// Stage 1: QUERY
 		logger.debug("Querying database for JWT...");
 		database.query(
-			"SELECT username, user_id, password FROM accounts WHERE username=$1", [
+			"SELECT username, user_id, password FROM logins WHERE username=$1", [
 				username,
 			],
 			(err, res) => {
