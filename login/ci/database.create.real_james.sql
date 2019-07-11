@@ -31,7 +31,7 @@ GRANT ALL ON SCHEMA public TO PUBLIC;
 
 -- DROP TABLE public.logins;
 
-CREATE TABLE public.logins
+CREATE TABLE logins
 (
     username character varying(320) COLLATE pg_catalog."default" NOT NULL,
     password character(60) COLLATE pg_catalog."default" NOT NULL,
@@ -48,5 +48,5 @@ WITH (
 )
 TABLESPACE pg_default;
 
-ALTER TABLE public.logins
-    OWNER to postgres;
+-- ALTER TABLE logins
+	-- OWNER to postgres;
