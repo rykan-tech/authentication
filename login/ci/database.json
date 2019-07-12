@@ -1,7 +1,7 @@
 {
   "ci": {
     "host": "postgres",
-    "port": 5433,
+    "port": 5432,
     "username": "login-server",
     "password": "ci-testing-password",
     "db_name": "users"
