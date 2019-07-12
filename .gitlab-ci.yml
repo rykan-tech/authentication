@@ -21,12 +21,12 @@ cache:
   paths:
     - node_modules/
 
-# Job 0: Build (npm install)
-# yarn-install:
-#   stage: prepare
-#   image: node:lts
-#   script:
-#     - yarn install
+Job 0: Build (npm install)
+yarn-install:
+  stage: prepare
+  image: node:lts
+  script:
+    - yarn install
 
 # db.login.build:
 #   stage: prepare
@@ -49,8 +49,8 @@ login.mocha:
   image: node:lts
   before_script:
     - cp ./login/ci/database.json ./login/private/database.json
-    - apt-get update
-    - apt-get install postgresql
+    - apt-get update  
+    - apt-get install -y postgresql
     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.create.real_james.sql
     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.create.ci.sql
     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.insert.sql
