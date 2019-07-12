@@ -22,11 +22,11 @@ cache:
     - node_modules/
 
 # Job 0: Build (npm install)
-yarn-install:
-  stage: prepare
-  image: node:lts
-  script:
-    - yarn install
+# yarn-install:
+#   stage: prepare
+#   image: node:lts
+#   script:
+#     - yarn install
 
 # db.login.build:
 #   stage: prepare
@@ -49,11 +49,12 @@ login.mocha:
   image: node:lts
   before_script:
     - cp ./login/ci/database.json ./login/private/database.json
-    - sudo apt-get install postgresql-client
+    - apt-get install postgresql-client
     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.create.real_james.sql
     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.create.ci.sql
     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.insert.sql
   script:
+    - yarn install
     - cd login && yarn test
 
 # Deploy to GitLab registry
