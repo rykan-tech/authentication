@@ -32,7 +32,7 @@ COMMENT ON ROLE "server-access" IS 'Used to allow servers to access the database
 -- PLEASE CHNAGE THE PASSWORD
 
 CREATE USER "login-server" WITH
-    PASSWORD "login-server-please-change";
+    PASSWORD 'login-server-please-change';
 GRANT "server-access" TO "login-server";
 
 COMMENT ON ROLE "login-server" IS 'Used to allow login server access';

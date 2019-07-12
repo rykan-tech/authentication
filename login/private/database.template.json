@@ -2,22 +2,22 @@
   "development": {
     "host": "0.0.0.0",
     "port": 1234,
-    "username": "",
-    "password": "",
+    "username": "login-server",
+    "password": "login-server-please-change",
     "db_name": "users"
   },
   "production": {
     "host": "0.0.0.0",
     "port": 1234,
-    "username": "",
-    "password": "",
+    "username": "login-server",
+    "password": "login-server-please-change",
     "db_name": "users"
   },
   "test": {
     "host": "0.0.0.0",
     "port": 1234,
-    "username": "",
-    "password": "",
+    "username": "login-server",
+    "password": "login-server-please-change",
     "db_name": "users"
   }
 }
