@@ -11,7 +11,31 @@ CREATE DATABASE users
     TABLESPACE = pg_default
     CONNECTION LIMIT = -1;
 
-ALTER DATABASE users OWNER TO "login-server-ci";
+COMMENT ON DATABASE users IS 'Contains the username and password and UUID combos';
+
+\connect users
+
+-- Create roles
+CREATE ROLE "server-access" WITH
+	LOGIN
+	NOSUPERUSER
+	NOCREATEDB
+	NOCREATEROLE
+	INHERIT
+	NOREPLICATION
+	CONNECTION LIMIT -1;
+COMMENT ON ROLE "server-access" IS 'Used to allow servers to access the database';
+
+-- User: "server-access"
+-- DROP USER "server-access";
+
+-- PLEASE CHNAGE THE PASSWORD
+
+CREATE USER "login-server" WITH
+    PASSWORD "login-server-please-change";
+GRANT "server-access" TO "login-server";
+
+COMMENT ON ROLE "login-server" IS 'Used to allow login server access';
 
 -- SCHEMA: public
 
@@ -47,6 +71,9 @@ WITH (
     OIDS = FALSE
 )
 TABLESPACE pg_default;
+
+-- GRANT perms
+GRANT SELECT ON TABLE logins TO "login-server";
 
 -- ALTER TABLE logins
 	-- OWNER to postgres;

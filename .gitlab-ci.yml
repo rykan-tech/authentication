@@ -32,6 +32,7 @@ db.login.build:
   image: postgres:latest
   script:
     - psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -h "postgres" -f login/ci/database.create.real_james.sql
+    - psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -h "postgres" -f login/ci/database.create.ci.sql
     - psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -h "postgres" -f login/ci/database.insert.sql
 
 
