@@ -14,6 +14,7 @@ variables:
   POSTGRES_DB: users
   POSTGRES_USER: rykan-testing
   POSTGRES_PASSWORD: ""
+  DEBIAN_FRONTEND: noninteractive
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
@@ -48,6 +49,7 @@ login.mocha:
   image: node:lts
   before_script:
     - cp ./login/ci/database.json ./login/private/database.json
+    - sudo apt-get install postgresql-client
     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.create.real_james.sql
     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.create.ci.sql
     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.insert.sql
