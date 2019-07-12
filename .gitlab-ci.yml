@@ -49,7 +49,7 @@ login.mocha:
   image: node:lts
   before_script:
     - cp ./login/ci/database.json ./login/private/database.json
-    - apt-get install postgresql-client
+    - apt-get install postgresql
     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.create.real_james.sql
     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.create.ci.sql
     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.insert.sql
