@@ -31,8 +31,8 @@ db.login.build:
   stage: prepare
   image: postgres:latest
   script:
-    - psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -h "postgres" -1 -f login/ci/database.create.real_james.sql
-    - psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -h "postgres" -1 -f login/ci/database.insert.sql
+    - psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -h "postgres" -f login/ci/database.create.real_james.sql
+    - psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -h "postgres" -f login/ci/database.insert.sql
 
 
 # Job 1: test
