@@ -19,5 +19,12 @@
     "username": "for-unit-testing",
     "password": "",
     "db_name": "units"
+  },
+  "development": {
+    "host": "unitTesting",
+    "port": 1234,
+    "username": "for-unit-testing",
+    "password": "",
+    "db_name": "units"
   }
 }
