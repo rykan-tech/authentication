@@ -65,11 +65,12 @@ app.post("/login", (req, res, next) => {
 		.catch(next);
 });
 
-
 // Allow a user to sign up
 app.post("/signup", (req, res, next) => {
-	
-})
+	res.statusCode = 501;
+	res.jsonMessage("Signup not yet supported");
+	res.end();
+});
 
 // For testing
 export default app;
