@@ -1,9 +1,9 @@
 {
   "ci": {
     "host": "postgres",
-    "port": 5433,
-    "username": "rykan-testing",
-    "password": "",
+    "port": 5432,
+    "username": "login-server",
+    "password": "ci-testing-password",
     "db_name": "users"
   },
   "production": {
@@ -14,6 +14,13 @@
     "db_name": "units"
   },
   "test": {
+    "host": "unitTesting",
+    "port": 1234,
+    "username": "for-unit-testing",
+    "password": "",
+    "db_name": "units"
+  },
+  "development": {
     "host": "unitTesting",
     "port": 1234,
     "username": "for-unit-testing",

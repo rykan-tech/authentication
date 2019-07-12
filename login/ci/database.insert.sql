@@ -15,4 +15,4 @@
 
 \connect users
 
-INSERT INTO logins (username, password, id) VALUES ('test_user', '$2b$12$fzgBiFE.TY1yHcbypiN/aeoLVuJfZKunV/bRxQ1MdS5wy2EsoDxdW', '969ee333-62d8-45bf-9f4c-82e55e5050a3');
+INSERT INTO logins VALUES ('test_user', '$2b$12$fzgBiFE.TY1yHcbypiN/aeoLVuJfZKunV/bRxQ1MdS5wy2EsoDxdW', '969ee333-62d8-45bf-9f4c-82e55e5050a3');

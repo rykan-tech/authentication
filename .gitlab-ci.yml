@@ -14,6 +14,7 @@ variables:
   POSTGRES_DB: users
   POSTGRES_USER: rykan-testing
   POSTGRES_PASSWORD: ""
+  DEBIAN_FRONTEND: noninteractive
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
@@ -27,12 +28,13 @@ yarn-install:
   script:
     - yarn install
 
-db.login.build:
-  stage: prepare
-  image: postgres:latest
-  script:
-    - psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -h "postgres" -1 -f login/ci/database.create.sql
-    - psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -h "postgres" -1 -f login/ci/database.insert.sql
+# db.login.build:
+#   stage: prepare
+#   image: postgres
+#   script:
+#     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.create.real_james.sql
+#     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.create.ci.sql
+#     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.insert.sql
 
 
 # Job 1: test
@@ -46,8 +48,13 @@ login.mocha:
   stage: test
   image: node:lts
   before_script:
-    - cp ./login/ci/database.json ./login/private/database.json
+    - apt-get update  
+    - apt-get install -y postgresql
+    - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.create.real_james.sql
+    - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.create.ci.sql
+    - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.insert.sql
   script:
+    - cp ./login/ci/database.json ./login/private/database.json
     - cd login && yarn test
 
 # Deploy to GitLab registry

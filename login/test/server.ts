@@ -16,7 +16,7 @@ describe("Server intergration test", () => {
 				.end((err, res) => {
 					if (err) { return done(err); }
 					expect(res.body).to.haveOwnProperty("jwt");
-					expect(res.body.jwt).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/)
+					expect(res.body.jwt).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
 					done();
 				});
 		});
