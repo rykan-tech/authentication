@@ -1,0 +1,13 @@
+#%RAML 1.0 SecurityScheme
+description: Authentication & Authorisation via JSON Web Token
+displayName: JSON Web Tokens
+type: x-jwt
+
+describedBy:
+  headers:
+    Authorization:
+      description: |
+        Standard Authorisation header containing the JWT.
+        Actual schema for payload is at /auth/securitySchemes/lwt.json
+      pattern: '[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?'
+      required: true

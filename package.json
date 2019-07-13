@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "description": "Contains the Rykan macroservice Authentication, in turn including all the microservices for authentication",
   "workspaces": [
-    "login"
+    "login",
+    "defs"
   ],
   "repository": "git@gitlab.com:rykan/authentication.git",
   "author": "Rykan",

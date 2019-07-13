@@ -1,0 +1,21 @@
+#%RAML 1.0 Extension
+# Common APIs shared between services
+title: Rykan Common API
+version: v1
+baseUri: http://api.rykan.tech/common
+
+extends: ../api/api.raml
+
+description: |
+  These are APIs shared between services,
+  and not specific to any one macroservice
+types:
+  TestType:
+    type: object
+    properties:
+      id: number
+      optional?: string
+      expanded:
+        type: object
+        properties:
+          count: number

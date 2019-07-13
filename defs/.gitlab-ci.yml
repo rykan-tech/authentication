@@ -1,0 +1,49 @@
+# Gitlab config
+include:
+  - local: ../ci/stages.yml
+
+# Job 1: lint
+defs.yaml-lint:
+  stage: test
+  image: python:latest
+  before_script:
+    - pip install --user yamllint # Install it
+  script:
+    - python -m yamllint -c ./.yaml-lint.yml **/*.raml # Lint the RAML files
+
+defs.raml-lint:
+  stage: test
+  image: node:latest
+  dependencies:
+    - npm-install
+  script:
+    - npx ramllint **/*.raml
+
+# Job 2: Generate docs
+# Each uber RAML gets its own docs
+defs.document-raml:
+  stage: document
+  image: node:latest
+  allow_failure: true
+  dependencies:
+    - npm-install
+  before_script:
+    - mkdir docs
+  script:
+    - NODE_OPTIONS=--max_old_space_size=2048 npx api-console build -t "RAML 1.0" -a ./auth/api.raml -o ./docs/auth --verbose
+  artifacts:
+    name: RAML API docs
+    paths:
+      - docs/
+
+document-protoc: # Document Protobufs
+  stage: document
+  image: pseudomuto/protoc-gen-doc
+  allow_failure: true
+  script:
+    - protoc --doc_out=./docs --doc_opt=html,protobuf-docs.html $(find . -not -path **node_modules** -name "*.proto" | sed ':a;N;$!ba;s/\n/ /g')
+    - protoc --doc_out=./docs --doc_opt=markdown,protobuf-docs.md $(find . -not -path **node_modules** -name "*.proto" | sed ':a;N;$!ba;s/\n/ /g')
+  artifacts:
+    name: gRPC and Protobuf docs
+    paths:
+      - docs/

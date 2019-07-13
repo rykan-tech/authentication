@@ -1,0 +1,76 @@
+#%RAML 1.0
+# Microservices API, exposed by the API gatweay
+title: Rykan Authentication API
+version: v1
+baseUri: https://api.rykan.tech/auth
+
+uses:
+  common: ../common/common.raml
+
+types:
+  LoginSchema: !include schemas/login.json
+  JWTReturn: !include schemas/jwt-return.json
+  Profile: !include ../accounts/schemas/profile.json
+  MessageReturn: !include ../common/schemas/message-return.raml
+
+securitySchemes:
+  JWT: !include securitySchemes/jwt.raml
+  XSRF: !include securitySchemes/xsrf.raml
+
+/login:
+  description: |
+    Authenticates a username and password combo.
+    Returns a JWT if the username and password is valid.
+    The schema for the JWT is found at schemas/jwt.json.
+    Please note: JWTs are validated by individual microservices,
+    and are checked for if they are blacklisted by the API Gateway
+  post:
+    securedBy: XSRF
+    body:
+      application/json: LoginSchema
+    responses:
+      200:
+        body:
+          application/json: JWTReturn
+      401:
+        body:
+          application/json:
+            type: MessageReturn
+            example:
+              message: Invalid username or password
+    is: [ common.missingField ]
+
+
+/signup:
+  description: |  
+    Creates a new user in the database
+    And then sends out a message to the other microservices,
+    that a new user has been made.
+    Also tells profile server to make a new profile for the user
+  post:
+    securedBy: XSRF
+    body:
+      application/json: Profile
+    responses:
+      200:
+        body:
+          application/json:
+            type: MessageReturn
+            example:
+              message: Profile created!
+    is: [ common.missingField ]
+
+/jwt/revoke:
+  description: |
+    Used to revoke a JWT.
+    Requires you to be logged in to revoke a JWT.
+    Please note: JWT blacklisting is handled by the API Gateway
+  post:
+    securedBy: JWT
+    body:
+      application/json:
+        properties:
+          jti:
+            description: Unique ID for the JWT to revoke
+            type: string
+    is: [ common.messageReturn ]

@@ -1,0 +1,34 @@
+{
+  "name": "@rykan/api-defs-auth",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Contains definitions for Auth macroservice in RAML format, gRPC and Protobufs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"TODO\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/rykan/raml-api-defs.git"
+  },
+  "keywords": [
+    "raml",
+    "thrift",
+    "protobuf",
+    "gRPC",
+    "rykan",
+    "api",
+    "rykan-api",
+    "microservices"
+  ],
+  "author": "Rykan",
+  "bugs": {
+    "url": "https://gitlab.com/rykan/raml-api-defs/issues"
+  },
+  "homepage": "https://gitlab.com/rykan/raml-api-defs#readme",
+  "devDependencies": {
+    "api-console-cli": "^1.0.14",
+    "raml2html": "^7.4.0",
+    "ramllint": "^1.2.6"
+  }
+}

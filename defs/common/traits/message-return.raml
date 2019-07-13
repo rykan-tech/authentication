@@ -1,0 +1,10 @@
+#%RAML 1.0 Trait
+description: |
+  Standard way of sending JSON messages back,
+  usually for reponses, i.e. "Task completed"
+
+responses:
+  200:
+    body:
+      application/json:
+        type: !include ../schemas/message-return.json

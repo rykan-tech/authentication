@@ -1,10 +1,8 @@
 # Gitlab config
-stages:
-  - prepare
-  - test # Test & lint
-  - document # Generate documentation
-  - dockerise # Generate docker images
-  - deploy # Deploy documentation
+
+include:
+  - local: ci/stages.yml
+  - local: defs/.gitlab.yml
 
 variables:
   RYKAN_DB_ENV: ci
@@ -18,6 +16,8 @@ cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
     - node_modules/
+    - login/node_modules/
+    - defs/node_modules/
 
 # Job 0: Build (npm install)
 yarn-install:

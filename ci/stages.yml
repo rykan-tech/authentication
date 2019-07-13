@@ -1,0 +1,7 @@
+# Defines the stages for gitlab builds
+stages:
+  - prepare
+  - test # Test & lint
+  - document # Generate documentation
+  - dockerise # Generate docker images
+  - deploy # Deploy documentation

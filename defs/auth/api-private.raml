@@ -1,0 +1,26 @@
+#%RAML 1.0
+# Private APIs, internal to the microservuces
+# Please fill api.raml first!
+title: Rykan Authentication API
+version: v1
+baseUri: http://api.rykan.tech/auth
+types:
+  TestType:
+    type: object
+    properties:
+      id: number
+      optional?: string
+      expanded:
+        type: object
+        properties:
+          count: number
+/helloWorld:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "message" : "Hello World"
+              }
