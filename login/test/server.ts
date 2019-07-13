@@ -2,7 +2,7 @@ import app from "../src/server";
 
 import { expect } from "chai";
 import request from "supertest";
-import { email, password } from "./constants";
+import { email, password, username } from "./constants";
 
 describe("Server intergration test", () => {
 	describe("POST /login", () => {
@@ -11,6 +11,21 @@ describe("Server intergration test", () => {
 			request(app)
 				.post("/login")
 				.send({ email, password })
+				.expect("Content-Type", "application/json; charset=utf-8")
+				.expect(200)
+				.end((err, res) => {
+					if (err) { return done(err); }
+					expect(res.body).to.haveOwnProperty("jwt");
+					expect(res.body.jwt).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
+					done();
+				});
+		});
+
+		it("should return a JWT string when correct stuff supplied, appending @rykanmail.com", (done) => {
+			// MAKE IT
+			request(app)
+				.post("/login")
+				.send({ email: username, password })
 				.expect("Content-Type", "application/json; charset=utf-8")
 				.expect(200)
 				.end((err, res) => {

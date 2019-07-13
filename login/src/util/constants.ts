@@ -4,7 +4,9 @@
 import { join } from "path";
 
 export const PORT = 2000;
-export const LOG_LEVEL = process.env.NODE_ENV === "development" ? "debug" : "info";
+export const LOG_LEVEL = process.env.NODE_ENV === "development" ?
+	"debug" :
+	(process.env.NODE_ENV === "test" ? "none" : "info");
 
 export const PRIVATE_FILES = join(__dirname, "../../private");
 

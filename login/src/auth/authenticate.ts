@@ -36,7 +36,7 @@ export default (email: string, password: string, database: pg.Pool): Promise<Aut
 		// Validate email?
 		// If an email contains the suffix already, then it's a business email
 		if (!email.includes("@")) {
-			logger.warn("A email did not contains the @rykan.com suffix, adding it.");
+			logger.warn("A email did not contain the @rykan.com suffix, adding it.");
 			email += RYKAN_EMAIL_SUFFIX;
 		}
 

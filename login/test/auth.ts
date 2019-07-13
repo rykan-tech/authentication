@@ -5,7 +5,7 @@ import { expect, assert } from "chai";
 
 import bcrypt from "bcrypt";
 import { Pool } from "pg";
-import { email, password } from "./constants";
+import { email, password, username } from "./constants";
 
 let passwordHash: string;
 let database: Pool;
@@ -63,6 +63,12 @@ describe("Authentication logic", () => {
 
 		it("should sucessfully authenticate a user and provide a JWT", async () => {
 			const result = await authenticate(email, password, database);
+			expect(result).to.have.property("authenticated", true);
+			expect(result).to.have.property("jwt");
+		});
+
+		it("should sucessfully authenticate a user & append @rykanmail.com", async () => {
+			const result = await authenticate(username, password, database);
 			expect(result).to.have.property("authenticated", true);
 			expect(result).to.have.property("jwt");
 		});
