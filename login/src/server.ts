@@ -8,6 +8,7 @@ import bodyParser from "body-parser";
 import createLogger from "./util/logger";
 import { connect as db_connect } from "./db";
 import authenticate from "./auth";
+import { RYKAN_EMAIL_SUFFIX } from "./util/constants";
 
 const logger = createLogger("server");
 const app = express();

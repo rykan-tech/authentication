@@ -6,7 +6,7 @@ import issueJWT from "./issue";
 import validatePassword from "./password";
 import createLogger from "../util/logger";
 import { DBSchema } from "../util/interfaces";
-import { DB_USERS_TABLE_NAME } from "../util/constants";
+import { DB_USERS_TABLE_NAME, RYKAN_EMAIL_SUFFIX } from "../util/constants";
 
 const logger = createLogger("auth");
 const debug = logger.debug;
@@ -32,8 +32,16 @@ export interface Authenticated {
  */
 export default (email: string, password: string, database: pg.Pool): Promise<Authenticated> => {
 	return new Promise((resolve, reject) => {
+		// Stage 0: Data validation
+		// Validate email?
+		// If an email contains the suffix already, then it's a business email
+		if (!email.includes("@")) {
+			logger.warn("A email did not contains the @rykan.com suffix, adding it.");
+			email += RYKAN_EMAIL_SUFFIX;
+		}
+
 		// Stage 1: QUERY
-		logger.debug("Querying database for JWT...");
+		logger.debug("Querying database for user info...");
 		database.query(
 			`SELECT email, user_id, password FROM ${DB_USERS_TABLE_NAME} WHERE email=$1`, [
 				email,

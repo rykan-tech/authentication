@@ -14,3 +14,6 @@ export const DB_USERS_TABLE_NAME = "logins";
 
 // JWT stuff
 export const JWT_LIFETIME = "2190h"; // 3 months
+
+// Email
+export const RYKAN_EMAIL_SUFFIX = "@rykanmail.com";
