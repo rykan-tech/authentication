@@ -61,7 +61,7 @@ login.test:
     - cd login && yarn run coverage
   artifacts:
     name: Login Coverage NYC
-    path:
+    paths:
       - login/coverage/
 
 # Deploy to GitLab registry
