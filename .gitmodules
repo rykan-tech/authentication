@@ -1,3 +1,0 @@
-[submodule "raml"]
-	path = raml
-	url = git@gitlab.com:rykan/raml-api-defs.git
