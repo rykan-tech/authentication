@@ -3,6 +3,7 @@ stages:
   - prepare
   - test # Test & lint
   - document # Generate documentation
+  - dockerise # Generate docker images
   - deploy # Deploy documentation
 
 variables:
@@ -60,7 +61,7 @@ login.mocha:
 
 # Deploy to GitLab registry
 login.docker:
-  stage: deploy
+  stage: dockerise
   image: docker:latest
   services:
     - docker:dind
@@ -75,8 +76,6 @@ login.docker:
 login.docker.release:
   stage: deploy
   image: docker:latest
-  dependencies:
-    - login.docker
   only:
    - master
   services:
