@@ -5,10 +5,6 @@ stages:
   - document # Generate documentation
   - deploy # Deploy documentation
 
-# Database
-services:
-  - postgres:latest
-
 variables:
   RYKAN_DB_ENV: ci
   POSTGRES_DB: users
@@ -47,6 +43,10 @@ ts-lint:
 login.mocha:
   stage: test
   image: node:lts
+  # Database
+  services:
+    - postgres:latest
+# DB setup
   before_script:
     - apt-get update  
     - apt-get install -y postgresql
@@ -61,6 +61,8 @@ login.mocha:
 login.docker:
   stage: deploy
   image: docker:latest
+  services:
+    - docker:dind
   script:
     - cd login
     - docker build -t registry.gitlab.com/rykan/authentication/login .
