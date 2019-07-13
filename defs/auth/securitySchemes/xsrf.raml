@@ -1,0 +1,14 @@
+#%RAML 1.0 SecurityScheme
+description: Uses XSRF to secure endpoints, namely pre-login actions
+displayName: XSRF Security
+type: x-xsrf
+
+describedBy:
+  headers:
+    Cookie:
+      type: string
+      description: |
+        Cookie contains the XSRF token for pre-login.
+        Actual tokens are set by the API Gateway when you come to the site
+        without a JWT.  They are verified by using the double submit cookie method.
+      pattern: ^xsrf-token=(.*); Expires=(.*); Secure; HttpOnly$

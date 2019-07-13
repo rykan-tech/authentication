@@ -1,0 +1,37 @@
+{
+  "type": "object",
+  "$schema": "http://json-schema.org/schema#",
+  "id": "https://api.rykan.tech",
+  "required": ["user", "exp", "jti"],
+  "description": "Describes the schema to be used by deserialised JSON Web Tokens.  Header not included (see RFC 7519)",
+  "properties": {
+    "user": {
+      "type": "object",
+      "description": "Contains information about the user",
+      "required": ["username", "permissions"],
+      "username": {
+        "type": "string"
+      },
+      "email": {
+        "type": "string",
+        "description": "The Rykan email associated with the account"
+      },
+      "permissions": {
+        "type": "array",
+        "description": "List of Rykan permissions/roles the JWT allows for the user, such as accessible services and actions that can be performed"
+      }
+    },
+    "exp": {
+      "type": "number",
+      "description": "Time in Unix time when the token expires"
+    },
+    "iat": {
+      "type": "number",
+      "description": "Time in Unix time for when the token was issued"
+    },
+    "jti": {
+      "type": "string",
+      "description": "Unique ID for the JWT"
+    }
+  }
+}

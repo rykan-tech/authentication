@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "$schema": "http://json-schema.org/schema#",
+  "id": "https://api.rykan.tech",
+  "required": ["message"],
+  "description": "Standard Schema used to send mesages (usually as a response, i.e. \"Task completed sucessfully\")",
+  "properties": {
+    "message": {
+      "type": "string",
+      "description": "The message to send"
+    }
+  }
+}

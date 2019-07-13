@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "$schema": "http://json-schema.org/schema#",
+  "id": "https://api.rykan.tech/auth",
+  "required": ["email", "password", "xsrf"],
+  "properties": {
+    "email": {
+      "type": "string",
+      "description": "The email the user uses.  Will auto add @rykan.tech to the end of it if not present."
+    },
+    "password": {
+      "type": "string"
+    },
+    "xsrf": {
+      "type": "string",
+      "description": "Contains the pre-login XSRF token, which is checked against headers"
+    }
+  }
+}
