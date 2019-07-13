@@ -30,7 +30,7 @@ defs.document-raml:
   artifacts:
     name: RAML API docs
     paths:
-      - docs/
+      - defs/docs/
 
 document-protoc: # Document Protobufs
   stage: document
@@ -43,4 +43,4 @@ document-protoc: # Document Protobufs
   artifacts:
     name: gRPC and Protobuf docs
     paths:
-      - docs/
+      - defs/docs/
