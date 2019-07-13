@@ -8,10 +8,7 @@
     "user": {
       "type": "object",
       "description": "Contains information about the user",
-      "required": ["username", "permissions"],
-      "username": {
-        "type": "string"
-      },
+      "required": ["email", "permissions", "user_id"],
       "email": {
         "type": "string",
         "description": "The Rykan email associated with the account"
@@ -19,6 +16,10 @@
       "permissions": {
         "type": "array",
         "description": "List of Rykan permissions/roles the JWT allows for the user, such as accessible services and actions that can be performed"
+      },
+      "user_id": {
+        "type": "string",
+        "description": "The UUID for the user"
       }
     },
     "exp": {

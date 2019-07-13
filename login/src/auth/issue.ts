@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import uuid from "uuid/v4";
 import { DBSchema } from "../util/interfaces";
 import createLogger from "../util/logger";
 import { JWT_LIFETIME } from "../util/constants";
@@ -18,7 +19,13 @@ export default function issueJWT(user: DBSchema) {
 	debug(`Singing a new JWT in the name of ${user}...`);
 	// generate JWT
 	return jwt.sign({
-		id: user.id,
-		email: user.email,
+		jti: uuid(),
+		user: {
+			email: user.email,
+			permissions: [
+				"jwt",
+			],
+			user_id: user.user_id,
+		},
 	}, secret, { expiresIn: JWT_LIFETIME });
 }
