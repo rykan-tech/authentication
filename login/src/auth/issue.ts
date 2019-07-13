@@ -1,7 +1,9 @@
 import jwt from "jsonwebtoken";
 import { DBSchema } from "../util/interfaces";
+import createLogger from "../util/logger";
 
-const debug = require("debug")("rykan:auth:jwt");
+const logger = createLogger("jwt");
+const debug = logger.debug;
 
 /**
  * Issues a new JSON Web Token,

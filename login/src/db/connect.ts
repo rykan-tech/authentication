@@ -4,8 +4,10 @@
 import { Pool } from "pg";
 import * as interfaces from "../util/interfaces";
 import * as constants from "../util/constants";
+import createLogger from "../util/logger";
 
-const debug = require("debug")("rykan:database");
+const logger = createLogger("database");
+const debug = logger.debug;
 
 /**
  * Creates a PostgreSQL Pool to connect to the database, based on a conifig

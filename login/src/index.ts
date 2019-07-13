@@ -4,7 +4,9 @@
 import express from "express";
 import * as constants from "./util/constants";
 import server from "./server";
-import logger from "./util/logger";
+import createLogger from "./util/logger";
+
+const logger = createLogger("server");
 
 const app = express();
 app.use(server);

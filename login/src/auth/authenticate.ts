@@ -4,10 +4,12 @@
 import pg from "pg";
 import issueJWT from "./issue";
 import validatePassword from "./password";
-import logger from "../util/logger";
+import createLogger from "../util/logger";
 import { DBSchema } from "../util/interfaces";
+import { DB_USERS_TABLE_NAME } from "../util/constants";
 
-const debug = require("debug")("rykan:auth");
+const logger = createLogger("auth");
+const debug = logger.debug;
 
 /**
  * Returned in the promise when authenticating in jwt/issue.ts
@@ -33,7 +35,7 @@ export default (username: string, password: string, database: pg.Pool): Promise<
 		// Stage 1: QUERY
 		logger.debug("Querying database for JWT...");
 		database.query(
-			"SELECT username, user_id, password FROM logins WHERE username=$1", [
+			`SELECT username, user_id, password FROM ${DB_USERS_TABLE_NAME} WHERE username=$1`, [
 				username,
 			],
 			(err, res) => {

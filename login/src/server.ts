@@ -5,10 +5,11 @@ import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import bodyParser from "body-parser";
-import logger from "./util/logger";
+import createLogger from "./util/logger";
 import { connect as db_connect } from "./db";
 import authenticate from "./auth";
 
+const logger = createLogger("server");
 const app = express();
 
 // Add middleware
@@ -32,7 +33,7 @@ app.use((req, res, next) => {
 });
 
 // Make DB connection
-logger.info("Initiating DB connection...");
+logger.info("Creating DB pool...");
 const database = db_connect();
 
 // We define our single route here.

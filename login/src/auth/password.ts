@@ -2,8 +2,10 @@
  * Validates a password, by checking it against the DB hash
  */
 import bcrypt from "bcrypt";
+import createLogger from "../util/logger";
 
-const debug = require("debug")("rykan:auth:pwd");
+const logger = createLogger("auth:pwd");
+const debug = logger.debug;
 /**
  * Validates a password, by checking its hash in the database using bcrypt
  * @param  {string} password The password to check
