@@ -42,7 +42,8 @@ ts-lint:
   script:
     - yarn run tslint --project ./login --config ./tslint.json
 
-login.mocha:
+# Mocha & Coverage
+login.test:
   stage: test
   image: node:lts
   # Database
@@ -57,7 +58,11 @@ login.mocha:
     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.insert.sql
   script:
     - cp ./login/ci/database.json ./login/private/database.json
-    - cd login && yarn test
+    - cd login && yarn run coverage
+  artifacts:
+    name: Login Coverage NYC
+    path:
+      - login/coverage/
 
 # Deploy to GitLab registry
 login.docker:

@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import uuid from "uuid/v4";
 import { DBSchema } from "../util/interfaces";
 import createLogger from "../util/logger";
-import { JWT_LIFETIME } from "../util/constants";
+import { JWT_LIFETIME, JWT_DEFAULT_PERMISSIONS } from "../util/constants";
 
 const logger = createLogger("jwt");
 const debug = logger.debug;
@@ -22,9 +22,7 @@ export default function issueJWT(user: DBSchema) {
 		jti: uuid(),
 		user: {
 			email: user.email,
-			permissions: [
-				"jwt",
-			],
+			permissions: JWT_DEFAULT_PERMISSIONS,
 			user_id: user.user_id,
 		},
 	}, secret, { expiresIn: JWT_LIFETIME });

@@ -1,8 +1,14 @@
 import app from "../src/server";
+import { JWTSchema } from "../src/util/interfaces";
 
 import { expect } from "chai";
 import request from "supertest";
+import { decode } from "jsonwebtoken";
+import { join } from "path";
 import { email, password, username } from "./constants";
+
+// tslint:disable-next-line: no-var-requires
+const jwtSchema = require(join(__dirname, "../../defs/auth/securitySchemes/jwt.json"));
 
 describe("Server intergration test", () => {
 	describe("POST /login", () => {
@@ -32,6 +38,14 @@ describe("Server intergration test", () => {
 					if (err) { return done(err); }
 					expect(res.body).to.haveOwnProperty("jwt");
 					expect(res.body.jwt).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
+					// Hacky typecast
+					const jwtPayload: any = decode(res.body.jwt); // Decoded
+					const jwt: JWTSchema = jwtPayload;
+
+					// tslint:disable-next-line: no-unused-expression
+					expect(jwt).to.be.jsonSchema(jwtSchema);
+					expect(jwt.user.email).to.be.equal(email);
+					// UUID not tested as we don't know what it is
 					done();
 				});
 		});

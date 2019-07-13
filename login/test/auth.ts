@@ -1,14 +1,23 @@
 import authenticate, { validatePassword, issueJWT } from "../src/auth";
 import connect from "../src/db/connect";
+import { email, password, username } from "./constants";
 
-import { expect, assert } from "chai";
+import chai, { expect, assert } from "chai";
 
 import bcrypt from "bcrypt";
 import { Pool } from "pg";
-import { email, password, username } from "./constants";
+import { decode } from "jsonwebtoken";
+import { join } from "path";
+import { JWTSchema } from "../src/util/interfaces";
+
+// tslint:disable-next-line: no-var-requires
+const jwtSchema = require(join(__dirname, "../../defs/auth/securitySchemes/jwt.json"));
 
 let passwordHash: string;
 let database: Pool;
+
+// tslint:disable-next-line: no-var-requires
+chai.use(require("chai-json-schema"));
 
 describe("Authentication logic", () => {
 	before((done) => {
@@ -41,16 +50,23 @@ describe("Authentication logic", () => {
 	});
 
 	describe("JSON Web Tokens", () => {
-
-		it("should return a valid JWT with an expected payload", () => {
-			// tslint:disable-next-line:no-console
-			console.log("THIS SHOULD EVENTUALLY TEST AGAINST JSON SCHEMA");
+		it("should return a valid JWT with an expected payload, matching the schema in defs/", () => {
 			// tslint:disable-next-line:no-unused-expression
-			expect(issueJWT({
-				email: "rykantester",
+			const jwtStr = issueJWT({
+				email,
 				password,
 				user_id: "some-uuid",
-			})).to.be.string;
+			});
+			// Hacky typecast
+			const jwtPayload: any = decode(jwtStr); // Decoded
+			const jwt: JWTSchema = jwtPayload;
+
+			// tslint:disable-next-line: no-unused-expression
+			expect(jwtStr).to.be.string;
+			expect(jwtStr).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
+			expect(jwt).to.be.jsonSchema(jwtSchema);
+			expect(jwt.user.email).to.be.equal(email);
+			expect(jwt.user.user_id).to.be.equal("some-uuid");
 		});
 	});
 
