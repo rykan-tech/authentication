@@ -2,7 +2,7 @@
 
 include:
   - local: ci/stages.yml
-  - local: defs/.gitlab.yml
+  - local: defs/.gitlab-ci.yml
 
 variables:
   RYKAN_DB_ENV: ci
