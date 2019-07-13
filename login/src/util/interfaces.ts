@@ -31,7 +31,6 @@ export interface DBSchema {
 	user_id: string;
 }
 
-
 /**
  * JWT schema, from https://app.quicktype.io/
  * Describes the schema to be used by deserialised JSON Web Tokens.
@@ -54,7 +53,7 @@ export interface JWTSchema {
 	/**
 	 * Contains information about the user
 	 */
-	user: User;
+	user: JWTSchemaUser;
 }
 /**
  * Contains information about the user
