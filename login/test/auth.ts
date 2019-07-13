@@ -49,7 +49,7 @@ describe("Authentication logic", () => {
 			expect(issueJWT({
 				email: "rykantester",
 				password,
-				id: "some-uuid",
+				user_id: "some-uuid",
 			})).to.be.string;
 		});
 	});
