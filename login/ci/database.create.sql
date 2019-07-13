@@ -1,140 +1,79 @@
---
--- PostgreSQL database dump
---
+-- Database: user_data
 
--- Dumped from database version 9.5.4
--- Dumped by pg_dump version 9.5.4
+-- DROP DATABASE user_data;
 
--- Started on 2019-07-01 19:11:36
+CREATE DATABASE users
+    WITH 
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'English_United States.1252'
+    LC_CTYPE = 'English_United States.1252'
+    TABLESPACE = pg_default
+    CONNECTION LIMIT = -1;
 
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SET check_function_bodies = false;
-SET client_min_messages = warning;
-SET row_security = off;
-
---
--- TOC entry 2112 (class 1262 OID 24578)
--- Name: users; Type: DATABASE; Schema: -; Owner: login-server-ci
---
-
-CREATE DATABASE users WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'English_United States.1252' LC_CTYPE = 'English_United States.1252';
-
-
-ALTER DATABASE users OWNER TO "login-server-ci";
+COMMENT ON DATABASE users IS 'Contains the email and password and UUID combos';
 
 \connect users
 
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SET check_function_bodies = false;
-SET client_min_messages = warning;
-SET row_security = off;
+-- Create roles
+CREATE ROLE "server-access" WITH
+	LOGIN
+	NOSUPERUSER
+	NOCREATEDB
+	NOCREATEROLE
+	INHERIT
+	NOREPLICATION
+	CONNECTION LIMIT -1;
+COMMENT ON ROLE "server-access" IS 'Used to allow servers to access the database';
 
---
--- TOC entry 2113 (class 1262 OID 24578)
--- Dependencies: 2112
--- Name: users; Type: COMMENT; Schema: -; Owner: login-server-ci
---
+-- User: "server-access"
+-- DROP USER "server-access";
 
-COMMENT ON DATABASE users IS 'Contains the username and password and UUID combos';
+-- PLEASE CHNAGE THE PASSWORD
 
+CREATE USER "login-server" WITH
+    PASSWORD 'login-server-please-change';
+GRANT "server-access" TO "login-server";
 
---
--- TOC entry 1 (class 3079 OID 12355)
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
---
+COMMENT ON ROLE "login-server" IS 'Used to allow login server access';
 
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+-- SCHEMA: public
 
+-- DROP SCHEMA public ;
 
---
--- TOC entry 2116 (class 0 OID 0)
--- Dependencies: 1
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
---
+CREATE SCHEMA public
+    AUTHORIZATION postgres;
 
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+COMMENT ON SCHEMA public
+    IS 'standard public schema';
 
-
---
--- TOC entry 2 (class 3079 OID 24579)
--- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: 
---
-
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
-
-
---
--- TOC entry 2117 (class 0 OID 0)
--- Dependencies: 2
--- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
-
-
-SET search_path = public, pg_catalog;
-
-SET default_tablespace = '';
-
-SET default_with_oids = false;
-
---
--- TOC entry 182 (class 1259 OID 24590)
--- Name: logins; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE logins (
-    username text,
-    password text,
-    id uuid NOT NULL
-);
-
-
-ALTER TABLE logins OWNER TO postgres;
-
-
---
--- TOC entry 1992 (class 2606 OID 24597)
--- Name: primaries; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY logins
-    ADD CONSTRAINT primaries PRIMARY KEY (id);
-
-
---
--- TOC entry 2115 (class 0 OID 0)
--- Dependencies: 7
--- Name: public; Type: ACL; Schema: -; Owner: postgres
---
-
-REVOKE ALL ON SCHEMA public FROM PUBLIC;
-REVOKE ALL ON SCHEMA public FROM postgres;
 GRANT ALL ON SCHEMA public TO postgres;
+
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
+-- Table: public.logins
 
---
--- TOC entry 2118 (class 0 OID 0)
--- Dependencies: 182
--- Name: logins; Type: ACL; Schema: public; Owner: postgres
---
+-- DROP TABLE public.logins;
 
-REVOKE ALL ON TABLE logins FROM PUBLIC;
-REVOKE ALL ON TABLE logins FROM postgres;
-GRANT ALL ON TABLE logins TO postgres;
-GRANT SELECT ON TABLE logins TO "login-server-ci";
+CREATE TABLE logins
+(
+    email character varying(320) COLLATE pg_catalog."default" NOT NULL,
+    password character(60) COLLATE pg_catalog."default" NOT NULL,
+    user_id uuid NOT NULL PRIMARY KEY,
+    -- email character varying(320) COLLATE pg_catalog."default" NOT NULL,
+    -- recovery_email character varying(320) COLLATE pg_catalog."default",
+    -- phone character varying(35) COLLATE pg_catalog."default",
+    -- fullname character varying(320) COLLATE pg_catalog."default" NOT NULL,
+	-- birth date NOT NULL,
+    CONSTRAINT uniqueness UNIQUE (email, user_id)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
 
+-- GRANT perms
+GRANT SELECT ON TABLE logins TO "login-server";
 
--- Completed on 2019-07-01 19:11:36
-
---
--- PostgreSQL database dump complete
---
-
+-- ALTER TABLE logins
+	-- OWNER to postgres;

@@ -52,7 +52,7 @@ login.mocha:
   before_script:
     - apt-get update  
     - apt-get install -y postgresql
-    - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.create.real_james.sql
+    - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.create.sql
     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.create.ci.sql
     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.insert.sql
   script:

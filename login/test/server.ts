@@ -2,7 +2,7 @@ import app from "../src/server";
 
 import { expect } from "chai";
 import request from "supertest";
-import { username, password } from "./constants";
+import { email, password } from "./constants";
 
 describe("Server intergration test", () => {
 	describe("POST /login", () => {
@@ -10,7 +10,7 @@ describe("Server intergration test", () => {
 			// MAKE IT
 			request(app)
 				.post("/login")
-				.send({ username, password })
+				.send({ email, password })
 				.expect("Content-Type", "application/json; charset=utf-8")
 				.expect(200)
 				.end((err, res) => {
@@ -25,7 +25,7 @@ describe("Server intergration test", () => {
 			// MAKE IT
 			request(app)
 				.post("/login")
-				.send({ username })
+				.send({ email })
 				.expect("Content-Type", "application/json; charset=utf-8")
 				.expect(422)
 				.end((err, res) => {
@@ -36,11 +36,11 @@ describe("Server intergration test", () => {
 				});
 		});
 
-		it("should return a 401 when invalid username or password sent", (done) => {
+		it("should return a 401 when invalid email or password sent", (done) => {
 			// MAKE IT
 			request(app)
 				.post("/login")
-				.send({ username, password: password + "nowInvalid" })
+				.send({ email, password: password + "nowInvalid" })
 				.expect("Content-Type", "application/json; charset=utf-8")
 				.expect(401)
 				.end((err, res) => {

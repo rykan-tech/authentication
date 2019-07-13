@@ -26,7 +26,7 @@ export interface DBConfig {
  * Database Schema
  */
 export interface DBSchema {
-	username: string;
+	email: string;
 	password: string;
 	id: string;
 }

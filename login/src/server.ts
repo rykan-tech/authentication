@@ -40,7 +40,7 @@ const database = db_connect();
 app.post("/login", (req, res, next) => {
 	logger.info("Authenticating....");
 	// Validate, are all fields present?
-	if (!req.body.hasOwnProperty("username") || !req.body.hasOwnProperty("password")) {
+	if (!req.body.hasOwnProperty("email") || !req.body.hasOwnProperty("password")) {
 		logger.error("Missing field in a request");
 		res.statusCode = 422;
 		res.jsonMessage("A required field was missing");
@@ -49,7 +49,7 @@ app.post("/login", (req, res, next) => {
 	}
 
 	// Fields are there, Authenticate and issue a JWT.
-	const jwt = authenticate(req.body.username, req.body.password, database)
+	const jwt = authenticate(req.body.email, req.body.password, database)
 		.then((authenticated) => {
 			if (authenticated.authenticated) {
 				logger.info("Authenticated successfully!");
@@ -59,7 +59,7 @@ app.post("/login", (req, res, next) => {
 			} else {
 				logger.info("Authenticated unsuccessfully");
 				res.statusCode = 401;
-				res.jsonMessage("Invalid username or password");
+				res.jsonMessage("Invalid email or password");
 				res.end();
 			}
 		})

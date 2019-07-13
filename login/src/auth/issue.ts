@@ -1,9 +1,13 @@
 import jwt from "jsonwebtoken";
 import { DBSchema } from "../util/interfaces";
 import createLogger from "../util/logger";
+import { JWT_LIFETIME } from "../util/constants";
 
 const logger = createLogger("jwt");
 const debug = logger.debug;
+
+// Will be replaced by public/private keypair
+const secret = "oaosfdhiu$%^£OOAHJjaqhOIjPO";
 
 /**
  * Issues a new JSON Web Token,
@@ -15,6 +19,6 @@ export default function issueJWT(user: DBSchema) {
 	// generate JWT
 	return jwt.sign({
 		id: user.id,
-		username: user.username,
-	}, "oaosfdhiuawesdhfiu", { expiresIn: 60 * 15 });
+		email: user.email,
+	}, secret, { expiresIn: JWT_LIFETIME });
 }

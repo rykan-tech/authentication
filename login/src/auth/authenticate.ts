@@ -15,7 +15,7 @@ const debug = logger.debug;
  * Returned in the promise when authenticating in jwt/issue.ts
  */
 export interface Authenticated {
-	authenticated: boolean; // If false, username or password was wrong
+	authenticated: boolean; // If false, email or password was wrong
 	jwt?: string;
 	userExists?: boolean;
 	passwordCorrect?: boolean;
@@ -25,18 +25,18 @@ export interface Authenticated {
  * Authenticates a user, by retrieveing their password hash from the database
  * and comparing it to the submitted password, using bcrypt
  * Returns a signed JSON Web Token for the user
- * @param  {string} username Username to check
+ * @param  {string} email Email to check
  * @param  {string} password Password to check
  * @param  {pg.Pool} database PostgreSQL Database pool
  * @returns Promise with boolean of if authenticated, and the JWT (if applicable)
  */
-export default (username: string, password: string, database: pg.Pool): Promise<Authenticated> => {
+export default (email: string, password: string, database: pg.Pool): Promise<Authenticated> => {
 	return new Promise((resolve, reject) => {
 		// Stage 1: QUERY
 		logger.debug("Querying database for JWT...");
 		database.query(
-			`SELECT username, user_id, password FROM ${DB_USERS_TABLE_NAME} WHERE username=$1`, [
-				username,
+			`SELECT email, user_id, password FROM ${DB_USERS_TABLE_NAME} WHERE email=$1`, [
+				email,
 			],
 			(err, res) => {
 				if (err) { reject(err); return; }

@@ -11,7 +11,8 @@
 			"TS_NODE_PROJECT": "login/tsconfig.json",
 			"TS_NODE_FILES": "true",
 			"NODE_ENV": "test",
-			"RYKAN_DB_ENV": "development"
+			"RYKAN_DB_ENV": "development",
+			"DEBUG": ""
 		},
 		"coverage-gutters.coverageReportFileName": "login/coverage/index.html",
 		"workbench.colorCustomizations": {

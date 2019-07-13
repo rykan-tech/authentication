@@ -5,7 +5,7 @@ import { expect, assert } from "chai";
 
 import bcrypt from "bcrypt";
 import { Pool } from "pg";
-import { username, password } from "./constants";
+import { email, password } from "./constants";
 
 let passwordHash: string;
 let database: Pool;
@@ -47,7 +47,7 @@ describe("Authentication logic", () => {
 			console.log("THIS SHOULD EVENTUALLY TEST AGAINST JSON SCHEMA");
 			// tslint:disable-next-line:no-unused-expression
 			expect(issueJWT({
-				username: "rykantester",
+				email: "rykantester",
 				password,
 				id: "some-uuid",
 			})).to.be.string;
@@ -62,13 +62,13 @@ describe("Authentication logic", () => {
 		});
 
 		it("should sucessfully authenticate a user and provide a JWT", async () => {
-			const result = await authenticate(username, password, database);
+			const result = await authenticate(email, password, database);
 			expect(result).to.have.property("authenticated", true);
 			expect(result).to.have.property("jwt");
 		});
 
 		it("should fail to authenticate a user with the wrong password", async () => {
-			const result = await authenticate(username, password + "notCorrect", database);
+			const result = await authenticate(email, password + "notCorrect", database);
 			expect(result).to.have.property("authenticated", false);
 			expect(result).to.have.property("passwordCorrect", false);
 		});
@@ -79,7 +79,7 @@ describe("Authentication logic", () => {
 				password: "not_a_password",
 				host: "",
 			});
-			authenticate(username, password + "notCorrect", malformedDb)
+			authenticate(email, password + "notCorrect", malformedDb)
 				.then(() => {
 					done(new Error("Expected method to reject"));
 				})
