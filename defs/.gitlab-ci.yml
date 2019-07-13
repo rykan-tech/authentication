@@ -21,8 +21,6 @@ defs.document-raml:
   stage: document
   image: node:latest
   allow_failure: true
-  dependencies:
-    - npm-install
   before_script:
     - mkdir docs
   script:
