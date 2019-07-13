@@ -9,12 +9,18 @@ defs.yaml-lint:
   script:
     - cd defs
     - python -m yamllint -c ./.yaml-lint.yml **/*.raml # Lint the RAML files
+  only:
+    changes:
+      - defs/**/*
 
 defs.raml-lint:
   stage: test
   image: node:latest
   script:
     - cd defs && yarn run ramllint **/*.raml
+  only:
+    changes:
+      - defs/**/*
 
 # Job 2: Generate docs
 # Each uber RAML gets its own docs
@@ -31,6 +37,9 @@ defs.document-raml:
     name: RAML API docs
     paths:
       - defs/docs/
+  only:
+    changes:
+      - defs/**/*
 
 document-protoc: # Document Protobufs
   stage: document
@@ -44,3 +53,6 @@ document-protoc: # Document Protobufs
     name: gRPC and Protobuf docs
     paths:
       - defs/docs/
+  only:
+    changes:
+      - defs/**/*
