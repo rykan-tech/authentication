@@ -13,7 +13,7 @@ defs.raml-lint:
   stage: test
   image: node:latest
   script:
-    - npx ramllint **/*.raml
+    - cd defs && yarn run ramllint **/*.raml
 
 # Job 2: Generate docs
 # Each uber RAML gets its own docs
@@ -22,9 +22,10 @@ defs.document-raml:
   image: node:latest
   allow_failure: true
   before_script:
+    - cd defs
     - mkdir docs
   script:
-    - NODE_OPTIONS=--max_old_space_size=2048 npx api-console build -t "RAML 1.0" -a ./auth/api.raml -o ./docs/auth --verbose
+    - NODE_OPTIONS=--max_old_space_size=2048 yarn run api-console build -t "RAML 1.0" -a ./auth/api.raml -o ./docs/auth --verbose
   artifacts:
     name: RAML API docs
     paths:
@@ -35,6 +36,7 @@ document-protoc: # Document Protobufs
   image: pseudomuto/protoc-gen-doc
   allow_failure: true
   script:
+    - cd docs
     - protoc --doc_out=./docs --doc_opt=html,protobuf-docs.html $(find . -not -path **node_modules** -name "*.proto" | sed ':a;N;$!ba;s/\n/ /g')
     - protoc --doc_out=./docs --doc_opt=markdown,protobuf-docs.md $(find . -not -path **node_modules** -name "*.proto" | sed ':a;N;$!ba;s/\n/ /g')
   artifacts:
