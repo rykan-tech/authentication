@@ -12,8 +12,6 @@ defs.yaml-lint:
 defs.raml-lint:
   stage: test
   image: node:latest
-  dependencies:
-    - npm-install
   script:
     - npx ramllint **/*.raml
 
