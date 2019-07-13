@@ -1,6 +1,6 @@
 # Gitlab config
 include:
-  - local: ../ci/stages.yml
+  - local: ci/stages.yml
 
 # Job 1: lint
 defs.yaml-lint:
