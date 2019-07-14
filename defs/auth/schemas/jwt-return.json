@@ -6,10 +6,6 @@
   "properties": {
     "isAuthenticated": {
       "type": "boolean"
-    },
-    "jwt": {
-      "type": "string",
-      "description": "The JSON web token that the server has generated"
     }
   }
 }

@@ -20,16 +20,21 @@ securitySchemes:
 /login:
   description: |
     Authenticates a username and password combo.
-    Returns a JWT if the username and password is valid.
+    Returns a JWT refresh token
+    if the username and password is valid.
     The schema for the JWT is found at schemas/jwt.json.
-    Please note: JWTs are validated by individual microservices,
-    and are checked for if they are blacklisted by the API Gateway
+    Please note: to use the microservices, an access token
+    JWT must be issued by the JWT server
   post:
     securedBy: XSRF
     body:
       application/json: LoginSchema
     responses:
       200:
+        headers:
+          Set-Cookie:
+            type: string
+            description: Must use HttpOnly & Secure attributes.
         body:
           application/json: JWTReturn
       401:
@@ -42,11 +47,12 @@ securitySchemes:
 
 
 /signup:
-  description: |  
-    Creates a new user in the database
+  description: |
+    Creates a new user in the database (on the login server)
     And then sends out a message to the other microservices,
     that a new user has been made.
-    Also tells profile server to make a new profile for the user
+    Also tells profile server to make a new profile for the user,
+    transferring profile data with it.
   post:
     securedBy: XSRF
     body:
@@ -60,11 +66,14 @@ securitySchemes:
               message: Profile created!
     is: [ common.missingField ]
 
+# JWT server
 /jwt/revoke:
   description: |
-    Used to revoke a JWT.
+    Used to revoke a JWT refresh token.
     Requires you to be logged in to revoke a JWT.
-    Please note: JWT blacklisting is handled by the API Gateway
+    Permission jwt:revoke:others is required.
+    If no JTI is present, revoke the JWT used to send the request
+    (log out)
   post:
     securedBy: JWT
     body:
@@ -73,4 +82,33 @@ securitySchemes:
           jti:
             description: Unique ID for the JWT to revoke
             type: string
+            required: false
+    is: [ common.messageReturn, common.missingField ]
+
+/jwt/issue:
+  description: |
+    Issues a new access token in the name of the user
+    Who is in the supplied JWT refresh token
+  get:
+    securedBy: JWT
+    responses:
+      200:
+        headers:
+          Set-Cookie:
+            type: string
+            description: Must use HttpOnly & Secure attributes.
+        body:
+            application/json:
+              type: MessageReturn
+              example:
+                message: JWT issued.
+
+/jwt/revoke/all:
+  description: |
+    Used to revoke all JWT refresh tokens
+    (logout of all devices) by chaning user's UUID
+    Requires you to be logged in to revoke a JWT.
+    Permission jwt:revoke (jwt:revoke:all) is required.
+  delete:
+    securedBy: JWT
     is: [ common.messageReturn ]
