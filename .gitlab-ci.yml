@@ -59,6 +59,7 @@ login.test:
   script:
     - cp ./login/ci/database.json ./login/private/database.json
     - cd login && yarn run coverage
+    - yarn run codecov
   artifacts:
     name: Login Coverage NYC
     paths:

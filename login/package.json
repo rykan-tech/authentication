@@ -26,7 +26,8 @@
     "reporter": [
       "text-summary",
       "html",
-      "lcov"
+      "lcov",
+      "json"
     ],
     "sourceMap": true,
     "instrument": true
@@ -56,6 +57,7 @@
     "@types/pg": "^7.4.14",
     "@types/uuid": "^3.4.5",
     "chai-json-schema": "^1.5.1",
+    "codecov": "^3.5.0",
     "cross-env": "^5.2.0",
     "nodemon": "^1.19.1"
   }
