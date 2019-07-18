@@ -14,7 +14,7 @@ Create a new file `database.json` in `login/private/` and copy the contents of `
 Run this command in the `login` directory:
 ```
 openssl ecparam -genkey -name prime256v1 -noout -out ./private/jwt-es256-private.pem
-openssl ec -in ./private/jwt-es256-key-pair.pem -pubout -out ./private/jwt-es256-public.pem
+openssl ec -in ./private/jwt-es256-private.pem -pubout -out ./private/jwt-es256-public.pem
 ```
 This will generate the ec256 keys to sign JWT refrsh tokens.
 
