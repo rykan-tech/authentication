@@ -5,19 +5,37 @@ import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import bodyParser from "body-parser";
-import XSRF from "csrf";
 import cookieParser from "cookie-parser";
+import Ajv from "ajv";
+import XSRF from "csrf";
 import createLogger from "./util/logger";
 import { connect as db_connect } from "./db";
 import authenticate from "./auth";
-import { JWT_LIFETIME_HRS, COOKIE_XSRF_NAME, COOKIE_JWT_NAME } from "./util/constants";
+import { JWT_LIFETIME_HRS, COOKIE_XSRF_NAME, COOKIE_JWT_NAME, SCHEMA_SIGNUP } from "./util/constants";
+import registerUser from "./register";
 
 const logger = createLogger("server");
 const app = express();
+const ajv = new Ajv({
+	allErrors: true,
+});
 
 // Define XSRF secret
 const Token = new XSRF();
 const secret = Token.secretSync();
+
+// Signup validation
+// NOTE: I have no idea what will happen when we start having many requests
+// it may be that a race condition means
+// errors another user encounters are leaked
+// i.e.:
+// Req 1: validates schema and writes errors to validateSignup
+// Req 2: validates schema and writes errors to validateSignup
+// Req 1: gets errors, but gets errors from Req2
+// though this may be a missunderstanding of how nodejs works
+// tslint:disable-next-line: no-var-requires
+const signupSchema = require(SCHEMA_SIGNUP);
+const validateSignup = ajv.compile(signupSchema);
 
 // Add middleware
 // Helmet add several hardening features to help with security
@@ -103,9 +121,56 @@ app.post("/login", (req, res, next) => {
 
 // Allow a user to sign up
 app.post("/signup", (req, res, next) => {
-	res.statusCode = 501;
-	res.jsonMessage("Signup not yet supported");
-	res.end();
+	logger.info("New user signup!");
+	// Validate
+	const isValid = validateSignup(req.body);
+	if (!isValid) {
+		logger.debug("User signup does not match schema! Detectcing cause(s)...");
+		if (typeof validateSignup.errors !== "undefined" && validateSignup.errors !== null) {
+			const missingFields: string[] = [];
+			const badTypes: { [key: string]: string } = {}; // property: correctType
+			for (const error of validateSignup.errors) {
+				const params: any = error.params; // Hacky force type cast
+				// handle missing properties
+				if (error.keyword === "required" && params.hasOwnProperty("missingProperty")) {
+					logger.debug(`Got missing property ${params.missingProperty}.`);
+					missingFields.push(params.missingProperty);
+				} else if (error.keyword === "type" && params.hasOwnProperty("type")) {
+					// handle properties of wrong type
+					logger.debug(`Got ${error.dataPath} as wrong type.`);
+					badTypes[error.dataPath.split(".")[1]] = params.type;
+				}
+			}
+
+			logger.debug("Detection finished, sending back...");
+			res.statusCode = 422;
+			res.json({
+				badTypes,
+				message: "Signup data does not match schema!",
+				missingFields,
+				fullError: process.env.NODE_ENV === "development" ? validateSignup.errors : "hidden",
+			});
+			validateSignup.errors = []; // clear for security
+			res.end();
+			return;
+		} else {
+			// No errors yet invalid? INTERNAL SERVER ERROR.
+			// Can't handle this
+			next(new Error("There was an unknown error validating your signup info."));
+			return;
+		}
+	} // isvalid
+
+	// It's good! register it!
+	registerUser(req.body.email, req.body.password, database)
+		.then(() => {
+			res.statusCode = 200;
+			res.jsonMessage("User added");
+			res.end();
+		})
+		.catch(next);
+
+	// TODO SEND OUT RABBITMQ events
 });
 
 // For testing

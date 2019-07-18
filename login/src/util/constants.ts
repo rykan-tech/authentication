@@ -30,3 +30,9 @@ export const RYKAN_EMAIL_SUFFIX = "@rykanmail.com";
 // Changing these may break a few things
 export const COOKIE_JWT_NAME = "_AuthRefresh";
 export const COOKIE_XSRF_NAME = "_XSRFTokenRefresh";
+
+// Schema
+export const SCHEMA_SIGNUP = join(__dirname, "../../../defs/auth/schemas/profile-signup.json");
+
+// Salt factor
+export const BCRYPT_SALT = 12;

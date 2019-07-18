@@ -3,10 +3,11 @@
  */
 import pg from "pg";
 import issueJWT from "./issue";
-import validatePassword from "./password";
+import { validatePassword } from "./password";
 import createLogger from "../util/logger";
 import { DBSchema } from "../util/interfaces";
 import { DB_USERS_TABLE_NAME, RYKAN_EMAIL_SUFFIX } from "../util/constants";
+import appendEmail from "../util/add-suffix";
 
 const logger = createLogger("auth");
 const debug = logger.debug;
@@ -35,10 +36,7 @@ export default (email: string, password: string, database: pg.Pool): Promise<Aut
 		// Stage 0: Data validation
 		// Validate email?
 		// If an email contains the suffix already, then it's a business email
-		if (!email.includes("@")) {
-			logger.warn("A email did not contain the @rykan.com suffix, adding it.");
-			email += RYKAN_EMAIL_SUFFIX;
-		}
+		email = appendEmail(email);
 
 		// Stage 1: QUERY
 		logger.debug("Querying database for user info...");

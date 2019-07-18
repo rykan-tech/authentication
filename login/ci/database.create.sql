@@ -74,6 +74,7 @@ TABLESPACE pg_default;
 
 -- GRANT perms
 GRANT SELECT ON TABLE logins TO "login-server";
+GRANT INSERT ON TABLE logins TO "login-server";
 
 -- ALTER TABLE logins
 	-- OWNER to postgres;
