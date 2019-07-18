@@ -18,6 +18,7 @@ cache:
     - node_modules/
     - login/node_modules/
     - defs/node_modules/
+    - login/private/
 
 # Job 0: Build (npm install)
 yarn-install:
