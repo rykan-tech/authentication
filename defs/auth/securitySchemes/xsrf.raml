@@ -5,10 +5,9 @@ type: x-xsrf
 
 describedBy:
   headers:
-    Cookie:
-      type: string
+    X-XSRF-TOKEN:
+      type: number
       description: |
-        Cookie contains the XSRF token for pre-login.
-        Actual tokens are set by the API Gateway when you come to the site
-        without a JWT.  They are verified by using the double submit cookie method.
-      pattern: ^xsrf-token=(.*); Expires=(.*); Secure; HttpOnly$
+        Contains the XSRF token, issued in a cookie or in a access token
+        issuing response.
+        Tokens are verified by using the double submit cookie method.

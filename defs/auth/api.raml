@@ -10,7 +10,7 @@ uses:
 types:
   LoginSchema: !include schemas/login.json
   JWTReturn: !include schemas/jwt-return.json
-  Profile: !include ../accounts/schemas/profile.json
+  Profile: !include schemas/profile-signup.json
   MessageReturn: !include ../common/schemas/message-return.raml
 
 securitySchemes:
@@ -34,9 +34,20 @@ securitySchemes:
         headers:
           Set-Cookie:
             type: string
-            description: Must use HttpOnly & Secure attributes.
+            description: |
+              Sets the cookie for the refresh token
+              & refresh XSRF.
+              Must use HttpOnly (but only on refresh token)
+              & Secure attributes.
+            pattern: |
+              ^_AuthRefresh=(.*); Expires=(.*); Secure; HttpOnly;
+              _XSRFTokenRefresh=(.*); Expires=(.*); Secure;$
         body:
-          application/json: JWTReturn
+          application/json:
+            type: JWTReturn
+            example:
+              message: JWT issued
+              isAuthenticated: true
       401:
         body:
           application/json:
@@ -72,7 +83,8 @@ securitySchemes:
     Used to revoke a JWT refresh token.
     Requires you to be logged in to revoke a JWT.
     Permission jwt:revoke:others is required.
-    If no JTI is present, revoke the JWT used to send the request
+    If no JTI is present, revoke the JWT refresh token
+    in the cookie supplied
     (log out)
   post:
     securedBy: JWT
@@ -97,11 +109,15 @@ securitySchemes:
           Set-Cookie:
             type: string
             description: Must use HttpOnly & Secure attributes.
+            pattern: ^_AuthAccess=(.*); Expires=(.*); Secure; HttpOnly;$
         body:
           application/json:
-            type: MessageReturn
+            properties:
+              message: string
+              xsrf: number
             example:
               message: JWT issued.
+              xsrf: 31415926535897932384626433832795028841971
 
 /jwt/revoke/all:
   description: |
