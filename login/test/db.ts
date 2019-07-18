@@ -39,7 +39,7 @@ describe("Database tests", () => {
 			expect(res.options.host).to.equal(config.development.host);
 		});
 
-		it("should retrieve a specific env if RYKAN_DB_ENV is specified", () => {
+		it("should retrieve a specific env if RYKAN_DB_ENV is specified, regardless of NODE_ENV", () => {
 			process.env.RYKAN_DB_ENV = "test";
 			const res: Pool2 = connect();
 			const config: DBConfig = require(DB_CONFIG_PATH);

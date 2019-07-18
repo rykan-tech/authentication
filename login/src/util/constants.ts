@@ -20,6 +20,8 @@ export const JWT_LIFETIME = `${JWT_LIFETIME_HRS}h`;
 export const JWT_DEFAULT_PERMISSIONS = [
 	"jwt",
 ];
+export const JWT_SIGNING_KEY = join(__dirname, "../../private/jwt-es256-private.pem");
+export const JWT_SIGNING_ALGORITHM = "ES256";
 
 // Email
 export const RYKAN_EMAIL_SUFFIX = "@rykanmail.com";

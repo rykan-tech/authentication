@@ -37,6 +37,8 @@ export default function createLogger(moduleName: string) {
 	// Disable logging if testing
 	if (process.env.RYKAN_LOG_SILENT === "true" || process.env.NODE_ENV === "test") {
 		newLogger.transports[0].silent = true;  // turns off
+	} else {
+		newLogger.transports[0].silent = false;
 	}
 
 	return newLogger;

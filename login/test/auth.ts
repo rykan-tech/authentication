@@ -1,17 +1,22 @@
 import authenticate, { validatePassword, issueJWT } from "../src/auth";
 import connect from "../src/db/connect";
 import { email, password, username } from "./constants";
+import { readFileSync } from "fs";
 
 import chai, { expect, assert } from "chai";
 
 import bcrypt from "bcrypt";
 import { Pool } from "pg";
-import { decode } from "jsonwebtoken";
+import { decode, verify } from "jsonwebtoken";
 import { join } from "path";
 import { JWTSchema } from "../src/util/interfaces";
+import { JWT_SIGNING_KEY } from "../src/util/constants";
+
 
 // tslint:disable-next-line: no-var-requires
 const jwtSchema = require(join(__dirname, "../../defs/auth/securitySchemes/jwt.json"));
+
+const pubKey = readFileSync(join(__dirname, "../private/jwt-es256-public.pem"));
 
 let passwordHash: string;
 let database: Pool;
@@ -67,6 +72,21 @@ describe("Authentication logic", () => {
 			expect(jwt).to.be.jsonSchema(jwtSchema);
 			expect(jwt.user.email).to.be.equal(email);
 			expect(jwt.user.user_id).to.be.equal("some-uuid");
+		});
+
+		it("should return a valid JWT signing with the appropriate algorithm", (done) => {
+			const jwtStr = issueJWT({
+				email,
+				password,
+				user_id: "some-uuid",
+			});
+			// Hacky typecast
+			const jwtPayload: any = decode(jwtStr, { complete: true }); // Decoded
+			expect(jwtPayload.header.alg).to.equal("ES256");
+			verify(jwtStr, pubKey, (err) => {
+				done(err);
+			});
+			//expect(() => verify(jwtStr, secret)).to.not.throw();
 		});
 	});
 

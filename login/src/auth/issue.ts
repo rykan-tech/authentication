@@ -2,13 +2,14 @@ import jwt from "jsonwebtoken";
 import uuid from "uuid/v4";
 import { DBSchema } from "../util/interfaces";
 import createLogger from "../util/logger";
-import { JWT_LIFETIME, JWT_DEFAULT_PERMISSIONS } from "../util/constants";
+import { JWT_LIFETIME, JWT_DEFAULT_PERMISSIONS, JWT_SIGNING_KEY, JWT_SIGNING_ALGORITHM } from "../util/constants";
+import { readFileSync } from "fs";
 
 const logger = createLogger("jwt");
 const debug = logger.debug;
 
-// Will be replaced by public/private keypair
-const secret = "oaosfdhiu$%^£OOAHJjaqhOIjPO";
+// ES256 key
+const secret = readFileSync(JWT_SIGNING_KEY);
 
 /**
  * Issues a new JSON Web Token,
@@ -25,5 +26,5 @@ export default function issueJWT(user: DBSchema) {
 			permissions: JWT_DEFAULT_PERMISSIONS,
 			user_id: user.user_id,
 		},
-	}, secret, { expiresIn: JWT_LIFETIME });
+	}, secret, { expiresIn: JWT_LIFETIME, algorithm: JWT_SIGNING_ALGORITHM });
 }

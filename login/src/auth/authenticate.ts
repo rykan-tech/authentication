@@ -73,7 +73,9 @@ export default (email: string, password: string, database: pg.Pool): Promise<Aut
 								passwordCorrect: false,
 							});
 						}
-					});
+					})
+					// tslint:disable-next-line: no-shadowed-variable
+					.catch((anotherErr) => reject(anotherErr));
 			},
 		);
 	});
