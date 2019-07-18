@@ -30,6 +30,9 @@ yarn-install:
 key-gen:
   stage: prepare
   image: ubuntu:latest
+  before_script:
+    - apt-get update  
+    - apt-get install -y openssl
   script:
     - cd login
     - openssl ecparam -genkey -name prime256v1 -noout -out ./private/jwt-es256-private.pem

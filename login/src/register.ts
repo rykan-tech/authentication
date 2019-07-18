@@ -8,11 +8,14 @@ import uuid = require("uuid");
 const logger = createLogger("register");
 
 /**
- * Signs up a user
+ * Registers a user to the database
+ * @param email Email to use
+ * @param password Plain text password
+ * @param database database PostgreSQL database pool
  */
-
 export default function registerUser(email: string, password: string, database: pg.Pool): Promise<void> {
 	return new Promise((resolve, reject) => {
+		// TODO: Add if user already exists checks
 		// Auto append
 		email = appendEmail(email);
 
