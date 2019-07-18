@@ -53,15 +53,15 @@ login.test:
   before_script:
     - apt-get update  
     - apt-get install -y postgresql openssl
-    - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.create.sql
-    - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.create.ci.sql
-    - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.insert.sql
     - cd login
+    - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f ci/database.create.sql
+    - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f ci/database.create.ci.sql
+    - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f ci/database.insert.sql
     - openssl ecparam -genkey -name prime256v1 -noout -out ./private/jwt-es256-private.pem
     - openssl ec -in ./private/jwt-es256-private.pem -pubout -out ./private/jwt-es256-public.pem
   script:
-    - cp ./login/ci/database.json ./login/private/database.json
-    - cd login && yarn run coverage
+    - cp ./ci/database.json ./private/database.json
+    - yarn run coverage
     - yarn run codecov
   artifacts:
     name: Login Coverage NYC
