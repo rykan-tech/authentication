@@ -12,7 +12,6 @@ import { join } from "path";
 import { JWTSchema } from "../src/util/interfaces";
 import { JWT_SIGNING_KEY } from "../src/util/constants";
 
-
 // tslint:disable-next-line: no-var-requires
 const jwtSchema = require(join(__dirname, "../../defs/auth/securitySchemes/jwt.json"));
 
@@ -74,7 +73,7 @@ describe("Authentication logic", () => {
 			expect(jwt.user.user_id).to.be.equal("some-uuid");
 		});
 
-		it("should return a valid JWT signing with the appropriate algorithm", (done) => {
+		it("should return a valid JWT signing with the appropriate algorithm", () => {
 			const jwtStr = issueJWT({
 				email,
 				password,
@@ -83,10 +82,7 @@ describe("Authentication logic", () => {
 			// Hacky typecast
 			const jwtPayload: any = decode(jwtStr, { complete: true }); // Decoded
 			expect(jwtPayload.header.alg).to.equal("ES256");
-			verify(jwtStr, pubKey, (err) => {
-				done(err);
-			});
-			//expect(() => verify(jwtStr, secret)).to.not.throw();
+			expect(() => verify(jwtStr, pubKey)).to.not.throw();
 		});
 	});
 

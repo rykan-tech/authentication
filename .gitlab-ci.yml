@@ -26,6 +26,15 @@ yarn-install:
   script:
     - yarn install
 
+# Generate the keys for the microservices
+key-gen:
+  stage: prepare
+  image: ubuntu:latest
+  script:
+    - cd login
+    - openssl ecparam -genkey -name prime256v1 -noout -out ./private/jwt-es256-private.pem
+    - openssl ec -in ./private/jwt-es256-key-pair.pem -pubout -out ./private/jwt-es256-public.pem
+
 # db.login.build:
 #   stage: prepare
 #   image: postgres
