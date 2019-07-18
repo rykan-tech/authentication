@@ -18,7 +18,6 @@ cache:
     - node_modules/
     - login/node_modules/
     - defs/node_modules/
-    - login/private/
 
 # Job 0: Build (npm install)
 yarn-install:
@@ -26,18 +25,6 @@ yarn-install:
   image: node:lts
   script:
     - yarn install
-
-# Generate the keys for the microservices
-key-gen:
-  stage: prepare
-  image: ubuntu:latest
-  before_script:
-    - apt-get update  
-    - apt-get install -y openssl
-  script:
-    - cd login
-    - openssl ecparam -genkey -name prime256v1 -noout -out ./private/jwt-es256-private.pem
-    - openssl ec -in ./private/jwt-es256-private.pem -pubout -out ./private/jwt-es256-public.pem
 
 # db.login.build:
 #   stage: prepare
@@ -65,10 +52,13 @@ login.test:
 # DB setup
   before_script:
     - apt-get update  
-    - apt-get install -y postgresql
+    - apt-get install -y postgresql openssl
     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.create.sql
     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.create.ci.sql
     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.insert.sql
+    - cd login
+    - openssl ecparam -genkey -name prime256v1 -noout -out ./private/jwt-es256-private.pem
+    - openssl ec -in ./private/jwt-es256-private.pem -pubout -out ./private/jwt-es256-public.pem
   script:
     - cp ./login/ci/database.json ./login/private/database.json
     - cd login && yarn run coverage
