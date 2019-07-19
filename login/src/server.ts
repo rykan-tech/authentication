@@ -193,4 +193,4 @@ app.post("/signup", (req, res, next) => {
 });
 
 // For testing
-export default app;	
+export default app;
