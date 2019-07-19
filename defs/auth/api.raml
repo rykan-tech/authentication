@@ -12,6 +12,7 @@ types:
   JWTReturn: !include schemas/jwt-return.json
   Profile: !include schemas/profile-signup.json
   MessageReturn: !include ../common/schemas/message-return.raml
+  SignUp422: !include schemas/signup-422.json
 
 securitySchemes:
   JWT: !include securitySchemes/jwt.raml
@@ -75,7 +76,10 @@ securitySchemes:
             type: MessageReturn
             example:
               message: Profile created!
-    is: [ common.missingField ]
+      422:
+        body:
+          application/json:
+            type: SignUp422
 
 # JWT server
 /jwt/revoke:

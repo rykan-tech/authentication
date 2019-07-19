@@ -1,0 +1,20 @@
+{
+	"type": "object",
+	"$schema": "http://json-schema.org/schema#",
+	"id": "https://api.rykan.tech/auth",
+	"required": [
+		"missingFields",
+		"badTypes"
+	],
+	"properties": {
+		"message": {
+			"type": "string"
+		},
+		"missingFields": {
+			"type": "array"
+		},
+		"badTypes": {
+			"type": "object"
+		}
+	}
+}

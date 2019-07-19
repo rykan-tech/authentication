@@ -14,6 +14,8 @@ import { COOKIE_JWT_NAME, COOKIE_XSRF_NAME, DB_USERS_TABLE_NAME } from "../src/u
 const jwtSchema = require(join(__dirname, "../../defs/auth/securitySchemes/jwt.json"));
 // tslint:disable-next-line: no-var-requires
 const response200Schema = require(join(__dirname, "../../defs/auth/schemas/jwt-return.json"));
+// tslint:disable-next-line: no-var-requires
+const register422Schema = require(join(__dirname, "../../defs/auth/schemas/signup-422.json"));
 
 const database = connect();
 const emailForRegister = email + "register_integration_tests";
@@ -199,9 +201,7 @@ describe("Server intergration tests", () => {
 				.expect(422)
 				.end((err, res) => {
 					if (err) { return done(err); }
-					expect(res.body).to.haveOwnProperty("message");
-					expect(res.body).to.haveOwnProperty("badTypes");
-					expect(res.body).to.haveOwnProperty("missingFields");
+					expect(res.body).to.be.jsonSchema(register422Schema);
 					expect(res.body.badTypes).to.deep.equal({});
 					expect(res.body.missingFields).to.deep.equal([
 						"email",
@@ -223,9 +223,7 @@ describe("Server intergration tests", () => {
 				.expect(422)
 				.end((err, res) => {
 					if (err) { return done(err); }
-					expect(res.body).to.haveOwnProperty("message");
-					expect(res.body).to.haveOwnProperty("badTypes");
-					expect(res.body).to.haveOwnProperty("missingFields");
+					expect(res.body).to.be.jsonSchema(register422Schema);
 					expect(res.body.badTypes).to.deep.equal({
 						email: "string",
 						name: "string",
