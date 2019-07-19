@@ -36,3 +36,7 @@ export const SCHEMA_SIGNUP = join(__dirname, "../../../defs/auth/schemas/profile
 
 // Salt factor
 export const BCRYPT_SALT = 12;
+
+// Uniquness constraint name that was set in the SQL build script
+// When the table was made
+export const SQL_LOGINS_UNIQUNESS_EMAIL_NAME = "uniqueness";

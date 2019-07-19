@@ -65,7 +65,7 @@ CREATE TABLE logins
     -- phone character varying(35) COLLATE pg_catalog."default",
     -- fullname character varying(320) COLLATE pg_catalog."default" NOT NULL,
 	-- birth date NOT NULL,
-    CONSTRAINT uniqueness UNIQUE (email, user_id)
+    CONSTRAINT uniqueness UNIQUE (email)
 )
 WITH (
     OIDS = FALSE

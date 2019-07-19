@@ -15,21 +15,22 @@ const email = appendEmail(username + "_register");
 chai.use(chaiAsPromised);
 
 describe("Registration (signup) test", () => {
-	it("should successfully add a user to the database", (done) => {
+
+	it("should successfully add a user to the database, with email suffix", (done) => {
 		registerUser(username + "_register", password, database)
-		.then(() => {
-			database.query(
-				`SELECT email, user_id, password FROM ${DB_USERS_TABLE_NAME} WHERE email=$1`,
-				[email],
-				(err, res) => {
-					if (err) { return done(err); }
-					expect(res.rows).to.have.length(1);
-					expect(res.rows[0].email).to.equal(email);
-					done();
-				},
-			);
-		})
-		.catch(done);
+			.then(() => {
+				database.query(
+					`SELECT email, user_id, password FROM ${DB_USERS_TABLE_NAME} WHERE email=$1`,
+					[email],
+					(err, res) => {
+						if (err) { return done(err); }
+						expect(res.rows).to.have.length(1);
+						expect(res.rows[0].email).to.equal(email);
+						done();
+					},
+				);
+			})
+			.catch(done);
 	});
 
 	it("should handle errors into the reject", () => {

@@ -11,7 +11,12 @@ import XSRF from "csrf";
 import createLogger from "./util/logger";
 import { connect as db_connect } from "./db";
 import authenticate, { registerUser } from "./auth";
-import { JWT_LIFETIME_HRS, COOKIE_XSRF_NAME, COOKIE_JWT_NAME, SCHEMA_SIGNUP } from "./util/constants";
+import {
+	JWT_LIFETIME_HRS,
+	COOKIE_XSRF_NAME,
+	COOKIE_JWT_NAME,
+	SCHEMA_SIGNUP,
+	SQL_LOGINS_UNIQUNESS_EMAIL_NAME } from "./util/constants";
 const logger = createLogger("server");
 const app = express();
 const ajv = new Ajv({
@@ -170,10 +175,22 @@ app.post("/signup", (req, res, next) => {
 			res.jsonMessage("User added");
 			res.end();
 		})
-		.catch(next);
+		.catch((err) => {
+			if (err.message.startsWith(
+				`duplicate key value violates unique constraint \"${SQL_LOGINS_UNIQUNESS_EMAIL_NAME}\"`,
+			)) {
+				// Duplicate resource!
+				res.statusCode = 409;
+				res.jsonMessage("Duplicate username!", {
+					note: "A duplicate UUID may have also been generated.",
+				});
+			} else {
+				next(err);
+			}
+		});
 
 	// TODO SEND OUT RABBITMQ events
 });
 
 // For testing
-export default app;
+export default app;	

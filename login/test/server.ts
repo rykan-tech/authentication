@@ -19,6 +19,14 @@ const register422Schema = require(join(__dirname, "../../defs/auth/schemas/signu
 
 const database = connect();
 const emailForRegister = email + "register_integration_tests";
+const userForRegister = {
+	email: emailForRegister,
+	password,
+	name: "MyName",
+	dob: "01/01/1970",
+	recoveryEmail: "recovery@email.com",
+	phone: "0118999881999119735",
+};
 
 describe("Server intergration tests", () => {
 
@@ -166,14 +174,7 @@ describe("Server intergration tests", () => {
 		it("should successfully add a user", (done) => {
 			request(app)
 				.post("/signup")
-				.send({
-					email: emailForRegister,
-					password,
-					name: "MyName",
-					dob: "01/01/1970",
-					recoveryEmail: "recovery@email.com",
-					phone: "0118999881999119735",
-				})
+				.send(userForRegister)
 				.expect("Content-Type", "application/json; charset=utf-8")
 				.expect(200)
 				.end((err, res) => {
@@ -238,7 +239,7 @@ describe("Server intergration tests", () => {
 				});
 		});
 
-		it("should hide full error when NODE_ENV not development", (done) => {
+		it("should hide full error when NODE_ENV not development (schema validation)", (done) => {
 			process.env.NODE_ENV = "production";
 			request(app)
 				.post("/signup")
@@ -254,7 +255,7 @@ describe("Server intergration tests", () => {
 				});
 		});
 
-		it("should not hide full error when NODE_ENV development", (done) => {
+		it("should not hide full error when NODE_ENV development (schema validation)", (done) => {
 			process.env.NODE_ENV = "development";
 			request(app)
 				.post("/signup")
@@ -266,6 +267,19 @@ describe("Server intergration tests", () => {
 					expect(res.body).to.haveOwnProperty("message");
 					expect(res.body).to.haveOwnProperty("fullError");
 					expect(res.body.fullError).to.be.an.instanceof(Array);
+					done();
+				});
+		});
+
+		it("should return a 409 when we try to add a duplicate user", (done) => {
+			request(app)
+				.post("/signup")
+				.send(userForRegister)
+				.expect("Content-Type", "application/json; charset=utf-8")
+				.expect(409)
+				.end((err, res) => {
+					if (err) { return done(err); }
+					expect(res.body).to.haveOwnProperty("message");
 					done();
 				});
 		});
