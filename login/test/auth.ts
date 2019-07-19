@@ -15,7 +15,7 @@ import { JWT_SIGNING_KEY } from "../src/util/constants";
 // tslint:disable-next-line: no-var-requires
 const jwtSchema = require(join(__dirname, "../../defs/auth/securitySchemes/jwt.json"));
 
-const pubKey = readFileSync(join(__dirname, "../private/jwt-es256-public.pem"));
+const pubKey = readFileSync(join(__dirname, "../private/jwt-rs256-public.pem"));
 
 let passwordHash: string;
 let database: Pool;
@@ -81,7 +81,7 @@ describe("Authentication logic", () => {
 			});
 			// Hacky typecast
 			const jwtPayload: any = decode(jwtStr, { complete: true }); // Decoded
-			expect(jwtPayload.header.alg).to.equal("ES256");
+			expect(jwtPayload.header.alg).to.equal("RS256");
 			expect(() => verify(jwtStr, pubKey)).to.not.throw();
 		});
 	});
