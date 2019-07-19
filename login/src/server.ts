@@ -10,10 +10,8 @@ import Ajv from "ajv";
 import XSRF from "csrf";
 import createLogger from "./util/logger";
 import { connect as db_connect } from "./db";
-import authenticate from "./auth";
+import authenticate, { registerUser } from "./auth";
 import { JWT_LIFETIME_HRS, COOKIE_XSRF_NAME, COOKIE_JWT_NAME, SCHEMA_SIGNUP } from "./util/constants";
-import registerUser from "./register";
-
 const logger = createLogger("server");
 const app = express();
 const ajv = new Ajv({

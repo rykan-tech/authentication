@@ -10,7 +10,6 @@ import { Pool } from "pg";
 import { decode, verify } from "jsonwebtoken";
 import { join } from "path";
 import { JWTSchema } from "../src/util/interfaces";
-import { JWT_SIGNING_KEY } from "../src/util/constants";
 
 // tslint:disable-next-line: no-var-requires
 const jwtSchema = require(join(__dirname, "../../defs/auth/securitySchemes/jwt.json"));

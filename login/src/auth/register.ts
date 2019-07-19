@@ -1,8 +1,8 @@
 import pg from "pg";
-import appendEmail from "./util/add-suffix";
-import { DB_USERS_TABLE_NAME } from "./util/constants";
-import createLogger from "./util/logger";
-import { hashPassword } from "./auth/password";
+import appendEmail from "../util/add-suffix";
+import { DB_USERS_TABLE_NAME } from "../util/constants";
+import createLogger from "../util/logger";
+import { hashPassword } from "./password";
 import uuid = require("uuid");
 
 const logger = createLogger("register");
