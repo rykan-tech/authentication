@@ -14,6 +14,7 @@ COPY ./package.json ./package.json
 COPY ./tsconfig.json ./tsconfig.json
 COPY ./src ./src/
 COPY ./private ./private/
+COPY ./defs ./defs
 
 # Global deps, for building
 RUN yarn global add typescript
@@ -49,6 +50,7 @@ EXPOSE 2000
 
 # Env vars
 ENV NODE_ENV=production
+ENV RYKAN_API_DEFS_DIR=/home/login-service/login/defs
 
 # Start on command
 CMD [ "node", "./lib/index.js" ]
