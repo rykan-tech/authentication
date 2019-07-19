@@ -8,14 +8,14 @@ import { decode } from "jsonwebtoken";
 import { join } from "path";
 import cookie from "cookie";
 import { email, password, username } from "./constants";
-import { COOKIE_JWT_NAME, COOKIE_XSRF_NAME, DB_USERS_TABLE_NAME } from "../src/util/constants";
+import { COOKIE_JWT_NAME, COOKIE_XSRF_NAME, DB_USERS_TABLE_NAME, API_DEFS_ROOT } from "../src/util/constants";
 
 // tslint:disable-next-line: no-var-requires
-const jwtSchema = require(join(__dirname, "../../defs/auth/securitySchemes/jwt.json"));
+const jwtSchema = require(join(API_DEFS_ROOT, "auth/securitySchemes/jwt.json"));
 // tslint:disable-next-line: no-var-requires
-const response200Schema = require(join(__dirname, "../../defs/auth/schemas/jwt-return.json"));
+const response200Schema = require(join(API_DEFS_ROOT, "auth/schemas/jwt-return.json"));
 // tslint:disable-next-line: no-var-requires
-const register422Schema = require(join(__dirname, "../../defs/auth/schemas/signup-422.json"));
+const register422Schema = require(join(API_DEFS_ROOT, "auth/schemas/signup-422.json"));
 
 const database = connect();
 const emailForRegister = email + "register_integration_tests";

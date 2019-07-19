@@ -32,7 +32,9 @@ export const COOKIE_JWT_NAME = "_AuthRefresh";
 export const COOKIE_XSRF_NAME = "_XSRFTokenRefresh";
 
 // Schema
-export const SCHEMA_SIGNUP = join(__dirname, "../../../defs/auth/schemas/profile-signup.json");
+export const API_DEFS_ROOT = process.env.RYKAN_API_DEFS_DIR ?
+	process.env.RYKAN_API_DEFS_DIR : join(__dirname, "../../../defs");
+export const SCHEMA_SIGNUP = join(API_DEFS_ROOT, "auth/schemas/profile-signup.json");
 
 // Salt factor
 export const BCRYPT_SALT = 12;

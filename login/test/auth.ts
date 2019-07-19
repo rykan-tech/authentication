@@ -10,9 +10,10 @@ import { Pool } from "pg";
 import { decode, verify } from "jsonwebtoken";
 import { join } from "path";
 import { JWTSchema } from "../src/util/interfaces";
+import { API_DEFS_ROOT } from "../src/util/constants";
 
 // tslint:disable-next-line: no-var-requires
-const jwtSchema = require(join(__dirname, "../../defs/auth/securitySchemes/jwt.json"));
+const jwtSchema = require(join(API_DEFS_ROOT, "/auth/securitySchemes/jwt.json"));
 
 const pubKey = readFileSync(join(__dirname, "../private/jwt-rs256-public.pem"));
 
