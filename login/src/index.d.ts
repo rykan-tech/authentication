@@ -5,6 +5,6 @@
 
 declare namespace Express {
 	export interface Response {
-		jsonMessage: (message: string) => void; // Easy send of JSON messages
+		jsonMessage: (message: string, extraJSON?: object) => void; // Easy send of JSON messages
 	}
 }

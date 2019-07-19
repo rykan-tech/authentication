@@ -33,6 +33,7 @@ export default function registerUser(email: string, password: string, database: 
 					(err, res) => {
 						if (err) {
 							reject(err);
+							return;
 						}
 						logger.info("New user added to the database.");
 						resolve();

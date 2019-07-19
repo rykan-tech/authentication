@@ -1,5 +1,6 @@
 import app from "../src/server";
 import { JWTSchema } from "../src/util/interfaces";
+import connect from "../src/db/connect";
 
 import { expect } from "chai";
 import request from "supertest";
@@ -7,14 +8,35 @@ import { decode } from "jsonwebtoken";
 import { join } from "path";
 import cookie from "cookie";
 import { email, password, username } from "./constants";
-import { COOKIE_JWT_NAME, COOKIE_XSRF_NAME } from "../src/util/constants";
+import { COOKIE_JWT_NAME, COOKIE_XSRF_NAME, DB_USERS_TABLE_NAME } from "../src/util/constants";
 
 // tslint:disable-next-line: no-var-requires
 const jwtSchema = require(join(__dirname, "../../defs/auth/securitySchemes/jwt.json"));
 // tslint:disable-next-line: no-var-requires
 const response200Schema = require(join(__dirname, "../../defs/auth/schemas/jwt-return.json"));
 
+const database = connect();
+const emailForRegister = email + "register_integration_tests";
+
 describe("Server intergration tests", () => {
+
+	describe("GET /", () => {
+		it("should return a heartbeat", (done) => {
+			request(app)
+				.get("/")
+				.expect("Content-Type", "application/json; charset=utf-8")
+				.expect(200)
+				.end((err, res) => {
+					if (err) { return done(err); }
+					expect(res.body).to.haveOwnProperty("message");
+					expect(res.body).to.haveOwnProperty("heartbeat");
+					// tslint:disable-next-line: no-unused-expression
+					expect(res.body.heartbeat).to.be.true;
+					done();
+				});
+		});
+	});
+
 	describe("POST /login", () => {
 
 		// RAML COMPLIANCE TESTS
@@ -135,5 +157,132 @@ describe("Server intergration tests", () => {
 					done();
 				});
 		});
+	});
+
+	describe("POST /signup", () => {
+
+		it("should successfully add a user", (done) => {
+			request(app)
+				.post("/signup")
+				.send({
+					email: emailForRegister,
+					password,
+					name: "MyName",
+					dob: "01/01/1970",
+					recoveryEmail: "recovery@email.com",
+					phone: "0118999881999119735",
+				})
+				.expect("Content-Type", "application/json; charset=utf-8")
+				.expect(200)
+				.end((err, res) => {
+					if (err) { return done(err); }
+					expect(res.body).to.haveOwnProperty("message");
+					database.query(
+						`SELECT email, user_id, password FROM ${DB_USERS_TABLE_NAME} WHERE email=$1`,
+						[emailForRegister],
+						// tslint:disable-next-line: no-shadowed-variable
+						(err, res) => {
+							if (err) { return done(err); }
+							expect(res.rows).to.have.length(1);
+							expect(res.rows[0].email).to.equal(emailForRegister);
+							done();
+						},
+					);
+				});
+		});
+
+		it("should return a list of missing fields", (done) => {
+			request(app)
+				.post("/signup")
+				.send({ /* NOTHING */ })
+				.expect("Content-Type", "application/json; charset=utf-8")
+				.expect(422)
+				.end((err, res) => {
+					if (err) { return done(err); }
+					expect(res.body).to.haveOwnProperty("message");
+					expect(res.body).to.haveOwnProperty("badTypes");
+					expect(res.body).to.haveOwnProperty("missingFields");
+					expect(res.body.badTypes).to.deep.equal({});
+					expect(res.body.missingFields).to.deep.equal([
+						"email",
+						"password",
+						"name",
+						"phone",
+						"recoveryEmail",
+						"dob",
+					]);
+					done();
+				});
+		});
+
+		it("should return a list of missing fields as well as bad types", (done) => {
+			request(app)
+				.post("/signup")
+				.send({ email: 42, name: NaN })
+				.expect("Content-Type", "application/json; charset=utf-8")
+				.expect(422)
+				.end((err, res) => {
+					if (err) { return done(err); }
+					expect(res.body).to.haveOwnProperty("message");
+					expect(res.body).to.haveOwnProperty("badTypes");
+					expect(res.body).to.haveOwnProperty("missingFields");
+					expect(res.body.badTypes).to.deep.equal({
+						email: "string",
+						name: "string",
+					});
+					expect(res.body.missingFields).to.deep.equal([
+						"password",
+						"phone",
+						"recoveryEmail",
+						"dob",
+					]);
+					done();
+				});
+		});
+
+		it("should hide full error when NODE_ENV not development", (done) => {
+			process.env.NODE_ENV = "production";
+			request(app)
+				.post("/signup")
+				.send({ /* NOTHING */ })
+				.expect("Content-Type", "application/json; charset=utf-8")
+				.expect(422)
+				.end((err, res) => {
+					if (err) { return done(err); }
+					expect(res.body).to.haveOwnProperty("message");
+					expect(res.body).to.haveOwnProperty("fullError");
+					expect(res.body.fullError).to.equal("hidden");
+					done();
+				});
+		});
+
+		it("should not hide full error when NODE_ENV development", (done) => {
+			process.env.NODE_ENV = "development";
+			request(app)
+				.post("/signup")
+				.send({ /* NOTHING */ })
+				.expect("Content-Type", "application/json; charset=utf-8")
+				.expect(422)
+				.end((err, res) => {
+					if (err) { return done(err); }
+					expect(res.body).to.haveOwnProperty("message");
+					expect(res.body).to.haveOwnProperty("fullError");
+					expect(res.body.fullError).to.be.an.instanceof(Array);
+					done();
+				});
+		});
+
+		// Cleanup
+		after((done) => {
+			database.query(
+				`DELETE FROM ${DB_USERS_TABLE_NAME} WHERE email=$1`,
+				[ emailForRegister ],
+				(err, res) => {
+					if (err) { return done(err); }
+					done();
+				},
+			);
+		});
+
 	});
 });

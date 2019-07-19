@@ -56,8 +56,8 @@ app.use(bodyParser.json());
 // Middleware to allow us to easily send JSON messages
 
 app.use((req, res, next) => {
-	res.jsonMessage = (message: string) => {
-		res.json({ message });
+	res.jsonMessage = (message: string, extraJSON?: object) => {
+		res.json({ message, ...extraJSON });
 	};
 	next();
 });
@@ -66,7 +66,14 @@ app.use((req, res, next) => {
 logger.info("Creating DB pool...");
 const database = db_connect();
 
-// We define our single route here.
+// Kubernetes heartbeat
+app.get("/", (req, res) => {
+	res.statusCode = 200;
+	res.jsonMessage("I am inevitable.", {
+		heartbeat: true,
+	});
+});
+
 app.post("/login", (req, res, next) => {
 	logger.info("Authenticating....");
 	// Validate, are all fields present?
@@ -99,17 +106,15 @@ app.post("/login", (req, res, next) => {
 
 				res.statusCode = 200;
 				logger.debug("Sending response...");
-				res.json({
+				res.jsonMessage("JWT sent.", {
 					isAuthenticated: true,
-					message: "JWT sent.",
 				});
 				res.end();
 			} else {
 				logger.info("Authenticated unsuccessfully");
 				res.statusCode = 401;
-				res.json({
+				res.jsonMessage("Invalid email or password", {
 					isAuthenticated: false,
-					message: "Invalid email or password",
 				});
 				res.end();
 			}
@@ -142,9 +147,8 @@ app.post("/signup", (req, res, next) => {
 
 			logger.debug("Detection finished, sending back...");
 			res.statusCode = 422;
-			res.json({
+			res.jsonMessage("Signup data does not match schema!", {
 				badTypes,
-				message: "Signup data does not match schema!",
 				missingFields,
 				fullError: process.env.NODE_ENV === "development" ? validateSignup.errors : "hidden",
 			});
