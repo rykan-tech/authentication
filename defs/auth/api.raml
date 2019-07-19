@@ -82,10 +82,10 @@ securitySchemes:
             type: SignUp422
       409:
         body:
-            application/json:
-              type: MessageReturn
-              example:
-                message: Duplicate user attempted to be registered
+          application/json:
+            type: MessageReturn
+            example:
+              message: Duplicate user attempted to be registered
 
 # JWT server
 /jwt/revoke:
