@@ -57,8 +57,8 @@ login.test:
     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f ci/database.create.sql
     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f ci/database.create.ci.sql
     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f ci/database.insert.sql
-    - openssl genrsa -out ./private/jwt-ec256-key-pair.pem 2048
-    - openssl rsa -in ./private/jwt-ec256-key-pair.pem -pubout > ./private/jwt-ec256-public.pem
+    - openssl genrsa -out ./private/jwt-rs256-key-pair.pem 2048
+    - openssl rsa -in ./private/jwt-rs256-key-pair.pem -pubout > ./private/jwt-rs256-public.pem
   script:
     - cp ./ci/database.json ./private/database.json
     - yarn run coverage
