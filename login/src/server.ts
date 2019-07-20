@@ -68,7 +68,7 @@ app.use((req, res, next) => {
 });
 
 // Make DB connection
-logger.info("Creating DB pool...");
+logger.debug("Creating DB pool...");
 const database = db_connect();
 
 // Kubernetes heartbeat

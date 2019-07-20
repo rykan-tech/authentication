@@ -32,7 +32,18 @@ Use `yarn run coverage` to get coverage in the `coverage` directory.
 ## Additonal commands
 Run `yarn run nodemon` to run the server with nodemon
 
-## Additonal variables
+## Additonal environment variables
 `RYKAN_API_DEFS_DIR`: specify the directory to find the api defintions (default: `../defs`)
 
 `RYKAN_LOG_SILENT` (`true` or `false` as values): silences all logging (used during tests)
+
+### Database variables
+- `RYKAN_POSTGRES_USER`: the user to use to login to the PostgreSQL database
+- `RYKAN_POSTGRES_PASSWORD`: the password to use to login to the postgres database
+- `RYKAN_POSTGRES_DATABASE`: database in PostgreSQL to connect to
+- `RYKAN_POSTGRES_PORT`: Port to connect to the database on
+- `RYKAN_POSTGRES_HOST`: Hostname/IP address of database
+
+Please note that if all these variables (apart from `RYKAN_POSTGRES_PASSWORD`, which will default to blank) are specified,
+the environment variables will be used by default, overriding the configuration files entirely.
+However, if not all the variables are set, only the set environment variables will override what is in the config (i.e. rest of the config is still used).
