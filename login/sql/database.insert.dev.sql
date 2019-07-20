@@ -13,6 +13,8 @@
 -- Data for Name: logins; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
+-- Sets up the database for development purposes
+
 \connect users
 
 INSERT INTO logins VALUES ('test_user@rykanmail.com', '$2b$12$fzgBiFE.TY1yHcbypiN/aeoLVuJfZKunV/bRxQ1MdS5wy2EsoDxdW', '969ee333-62d8-45bf-9f4c-82e55e5050a3');

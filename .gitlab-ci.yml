@@ -54,9 +54,9 @@ login.test:
     - apt-get update  
     - apt-get install -y postgresql openssl
     - cd login
-    - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f ci/database.create.sql
-    - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f ci/database.create.ci.sql
-    - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f ci/database.insert.sql
+    - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f sql/database.create.sql # Create DB
+    - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f ci/database.create.ci.sql # Change PWD
+    - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f sql/database.insert.dev.sql # Add test user
     - openssl genrsa -out ./private/jwt-rs256-private.pem 2048
     - openssl rsa -in ./private/jwt-rs256-private.pem -pubout > ./private/jwt-rs256-public.pem
   script:

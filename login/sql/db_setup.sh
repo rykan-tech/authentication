@@ -1,0 +1,1 @@
+psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f sql/database.create.ci.sql
