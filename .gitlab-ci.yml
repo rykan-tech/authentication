@@ -70,8 +70,12 @@ login.test:
       - login/coverage/
 
 ### JWT ###
-#jwt.test:
-#  stage: test
+jwt.test:
+  stage: test
+  image: openjdk:12
+  script:
+    - cd jwt
+    - mvn clean install
 
 
 ### DEPLOY ###

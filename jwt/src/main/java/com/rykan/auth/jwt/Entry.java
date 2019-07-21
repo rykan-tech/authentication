@@ -14,37 +14,6 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class Entry {
 
-	// Here, configure rabbitmq
-	@Bean
-	Queue queue() {
-		return new Queue("general.user.created");
-	}
-
-	@Bean
-	DirectExchange exchange() {
-		return new DirectExchange("general.user");
-	}
-
-	@Bean
-	Binding binding(Queue queue, DirectExchange exchange) {
-		return BindingBuilder.bind(queue).to(exchange).with("general.user.created");
-	}
-
-	@Bean
-	SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
-			MessageListenerAdapter listenerAdapter) {
-		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-		container.setConnectionFactory(connectionFactory);
-		container.setQueueNames("general.user.created");
-		container.setMessageListener(listenerAdapter);
-		return container;
-	}
-	
-	@Bean
-	MessageListenerAdapter listenerAdapter(UserCreatedRec receiver) {
-		return new MessageListenerAdapter(receiver, "receiveMessage");
-	}
-
 	public static void main(String[] args) {
 		SpringApplication.run(Entry.class, args);
 	}
