@@ -78,8 +78,7 @@ jwt.test:
   stage: test
   image: openjdk:12
   before_script:
-    - apt-get update  
-    - apt-get install -y postgresql maven
+    - yum -y install maven
   script:
     - cd jwt
     - mvn clean install
