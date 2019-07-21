@@ -52,7 +52,7 @@ export const BCRYPT_SALT = 12;
 export const SQL_LOGINS_UNIQUNESS_EMAIL_NAME = "uniqueness";
 
 // Rabbitmq
-export const RABBITMQ_ADDRESS = process.env.RYKAN_RABBITMQ_ADDRESS || "amqp://localhost";
+export const RABBITMQ_ADDRESS = process.env.RYKAN_AMQP_ADDRESS || "amqp://localhost";
 export const RABBITMQ_EXCHANGES: { [key: string]: RabbitMQExchange } = {
 	userEvents: {
 		description: "User events, such as creation & deletion",

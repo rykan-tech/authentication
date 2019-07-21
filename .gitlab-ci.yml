@@ -13,7 +13,7 @@ variables:
   DOCKER_IMAGE_TAG: $CI_REGISTRY_IMAGE/login:$CI_COMMIT_REF_SLUG
   RABBITMQ_DEFAULT_USER: ci
   RABBITMQ_DEFAULT_PASS: ci
-  AMQP_URL: 'amqp://ci:ci@rabbitmq:5672'
+  RYKAN_AMQP_ADDRESS: 'amqp://ci:ci@rabbitmq:5672'
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
