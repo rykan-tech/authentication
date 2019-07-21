@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package rykan.mq.general.user.events;
+
+/**
+ * Message format for when user made
+ */
+message UserCreated {
+	string uuid = 1; /// UUID of user
+}

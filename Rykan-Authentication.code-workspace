@@ -2,6 +2,12 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "jwt"
+		},
+		{
+			"path": "login"
 		}
 	],
 	"settings": {

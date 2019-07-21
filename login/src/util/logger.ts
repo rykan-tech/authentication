@@ -9,7 +9,7 @@ import * as constants from "./constants";
 const { combine, colorize, printf, timestamp } = winston.format;
 
 export default function createLogger(moduleName: string) {
-	const newLogger = winston.createLogger({
+	const options: winston.LoggerOptions = {
 		transports: [
 			new winston.transports.Console({
 				format: combine(
@@ -33,11 +33,13 @@ export default function createLogger(moduleName: string) {
 				level: "info",
 			}),
 		],
-	});
+	};
+
+	const newLogger = winston.createLogger(options);
 	// Disable logging if testing
 	if (process.env.RYKAN_LOG_SILENT === "true" || process.env.NODE_ENV === "test") {
 		newLogger.transports[0].silent = true;  // turns off
-	} else {
+	} else {	
 		newLogger.transports[0].silent = false;
 	}
 

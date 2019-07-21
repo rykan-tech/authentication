@@ -8,6 +8,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import Ajv from "ajv";
 import XSRF from "csrf";
+import protobuf from "protobufjs";
 import createLogger from "./util/logger";
 import { connect as db_connect } from "./db";
 import authenticate, { registerUser } from "./auth";
@@ -16,7 +17,12 @@ import {
 	COOKIE_XSRF_NAME,
 	COOKIE_JWT_NAME,
 	SCHEMA_SIGNUP,
-	SQL_LOGINS_UNIQUNESS_EMAIL_NAME } from "./util/constants";
+	SQL_LOGINS_UNIQUNESS_EMAIL_NAME,
+	RABBITMQ_EXCHANGES,
+	PROTOBUF_GENERAL_USER_CREATED,
+} from "./util/constants";
+import amqp_connect from "./rabbitmq/connect";
+import { Channel } from "amqplib";
 const logger = createLogger("server");
 const app = express();
 const ajv = new Ajv({
@@ -39,6 +45,11 @@ const secret = Token.secretSync();
 // tslint:disable-next-line: no-var-requires
 const signupSchema = require(SCHEMA_SIGNUP);
 const validateSignup = ajv.compile(signupSchema);
+
+// Load Protobuf for events user create
+const userCreatedProto = protobuf
+	.loadSync(PROTOBUF_GENERAL_USER_CREATED.file)
+	.lookupType(PROTOBUF_GENERAL_USER_CREATED.name);
 
 // Add middleware
 // Helmet add several hardening features to help with security
@@ -70,6 +81,11 @@ app.use((req, res, next) => {
 // Make DB connection
 logger.debug("Creating DB pool...");
 const database = db_connect();
+
+// Make RabbitMQ connection
+let rabbitMqChannel: Channel;
+amqp_connect()
+.then(channel => rabbitMqChannel = channel);
 
 // Kubernetes heartbeat
 app.get("/", (req, res) => {
@@ -170,10 +186,17 @@ app.post("/signup", (req, res, next) => {
 
 	// It's good! register it!
 	registerUser(req.body.email, req.body.password, database)
-		.then(() => {
+		.then((user) => {
 			res.statusCode = 200;
 			res.jsonMessage("User added");
 			res.end();
+			logger.debug("Sending out a new user event (async, after req)...");
+			// Serialse
+			logger.debug("Serialising message...");
+			// Forced any as TS defs say UInt8Array
+			const eventMsg: any = userCreatedProto.encode(userCreatedProto.create({ uuid: user.uuid })).finish();
+			rabbitMqChannel.sendToQueue(RABBITMQ_EXCHANGES.userEvents.queues.userCreated.name, eventMsg);
+			logger.debug("Message sent.");
 		})
 		.catch((err) => {
 			if (err.message.startsWith(

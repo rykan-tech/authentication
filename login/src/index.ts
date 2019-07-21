@@ -8,6 +8,12 @@ import createLogger from "./util/logger";
 
 const logger = createLogger("server");
 
+// Uncaught excpetion handler, register first
+process.on("unhandledRejection", (err) => {
+	logger.error("An uncaught promise rejection was encountered!");
+	throw err;
+});
+
 const app = express();
 app.use(server);
 

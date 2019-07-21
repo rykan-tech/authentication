@@ -1,6 +1,6 @@
 # Defines the stages for gitlab builds
 stages:
-  - prepare
+  - build
   - test # Test & lint
   - document # Generate documentation
   - dockerise # Generate docker images

@@ -21,13 +21,13 @@ cache:
 
 # Job 0: Build (npm install)
 yarn-install:
-  stage: prepare
+  stage: build
   image: node:lts
   script:
     - yarn install
 
 # db.login.build:
-#   stage: prepare
+#   stage: build
 #   image: postgres
 #   script:
 #     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f login/ci/database.create.real_james.sql
@@ -42,6 +42,7 @@ ts-lint:
   script:
     - yarn run tslint --project ./login --config ./tslint.json
 
+### Login ###
 # Mocha & Coverage
 login.test:
   stage: test
@@ -49,7 +50,7 @@ login.test:
   # Database
   services:
     - postgres:latest
-# DB setup
+  # DB setup
   before_script:
     - apt-get update  
     - apt-get install -y postgresql openssl
@@ -68,6 +69,12 @@ login.test:
     paths:
       - login/coverage/
 
+### JWT ###
+#jwt.test:
+#  stage: test
+
+
+### DEPLOY ###
 # Deploy to GitLab registry
 login.docker:
   stage: dockerise

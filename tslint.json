@@ -14,7 +14,8 @@
         },
         "no-var-requires": {
             "severity": "warning"
-        }
+        },
+        "arrow-parens": false
     },
     "rulesDirectory": []
 }

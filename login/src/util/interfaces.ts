@@ -1,3 +1,5 @@
+import amqplib from "amqplib";
+
 /**
  * Interfaces
  */
@@ -62,4 +64,24 @@ export interface JWTSchemaUser {
 	email: string;
 	permissions: string[];
 	user_id: string;
+}
+
+/**
+ * Interface to defines queues
+ */
+export interface RabbitMQQueue {
+	name: string;
+	options: amqplib.Options.AssertQueue;
+	description: string;
+}
+
+/**
+ * Interface for rabbitmq exchange spec
+ */
+export interface RabbitMQExchange {
+	name: string;
+	description: string;
+	type: string;
+	options: amqplib.Options.AssertExchange;
+	queues: { [key: string]: RabbitMQQueue };
 }
