@@ -11,6 +11,9 @@ variables:
   POSTGRES_PASSWORD: ""
   DEBIAN_FRONTEND: noninteractive
   DOCKER_IMAGE_TAG: $CI_REGISTRY_IMAGE/login:$CI_COMMIT_REF_SLUG
+  RABBITMQ_DEFAULT_USER: ci
+  RABBITMQ_DEFAULT_PASS: ci
+  AMQP_URL: 'amqp://ci:ci@rabbitmq:5672'
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
@@ -50,6 +53,7 @@ login.test:
   # Database
   services:
     - postgres:latest
+    - rabbitmq:latest
   # DB setup
   before_script:
     - apt-get update  
@@ -73,6 +77,9 @@ login.test:
 jwt.test:
   stage: test
   image: openjdk:12
+  before_script:
+    - apt-get update  
+    - apt-get install -y postgresql maven
   script:
     - cd jwt
     - mvn clean install
