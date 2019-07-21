@@ -26,6 +26,8 @@ export default async function connect() {
 					const queue = exchangeObj.queues[queueKey];
 					logger.debug(`Creating queue ${queue.name} in ${exchangeObj.name}...`);
 					await channel.assertQueue(queue.name, queue.options);
+					logger.debug("Binding exchange & queues...")
+					await channel.bindQueue(queue.name, exchangeObj.name, "");
 				}
 			}
 		}

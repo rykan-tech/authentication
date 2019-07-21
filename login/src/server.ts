@@ -195,7 +195,11 @@ app.post("/signup", (req, res, next) => {
 			logger.debug("Serialising message...");
 			// Forced any as TS defs say UInt8Array
 			const eventMsg: any = userCreatedProto.encode(userCreatedProto.create({ uuid: user.uuid })).finish();
-			rabbitMqChannel.sendToQueue(RABBITMQ_EXCHANGES.userEvents.queues.userCreated.name, eventMsg);
+			rabbitMqChannel.publish(
+				RABBITMQ_EXCHANGES.userEvents.name,
+				RABBITMQ_EXCHANGES.userEvents.queues.userCreated.name,
+				eventMsg,
+			);
 			logger.debug("Message sent.");
 		})
 		.catch((err) => {
