@@ -3,6 +3,14 @@
 		{
 			"path": "."
 		},
+		{
+			"name": "jwt",
+			"path": "jwt"
+		},
+		{
+			"name": "login",
+			"path": "login"
+		}
 	],
 	"settings": {
 		"mochaExplorer.files": "login/test/*.ts",
@@ -17,6 +25,7 @@
 		"coverage-gutters.coverageReportFileName": "login/coverage/index.html",
 		"workbench.colorCustomizations": {
 			"tab.unfocusedActiveBorder": "#fff0"
-		}
+		},
+		"java.configuration.updateBuildConfiguration": "automatic"
 	}
 }
