@@ -33,7 +33,7 @@ export default function registerUser(email: string, password: string, database: 
 					email,
 					hash,
 					uuid: uuid.v4(),
-				}
+				};
 				database.query(
 					`INSERT INTO ${DB_USERS_TABLE_NAME} (email, password, user_id) VALUES ($1, $2, $3)`,
 					[
