@@ -77,11 +77,9 @@ login.test:
 jwt.test:
   stage: test
   image: openjdk:12
-  before_script:
-    - yum -y install maven
   script:
     - cd jwt
-    - mvn clean install
+    - ./mvnw clean install
 
 
 ### DEPLOY ###

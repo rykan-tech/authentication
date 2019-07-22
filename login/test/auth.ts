@@ -37,7 +37,13 @@ describe("Authentication logic", () => {
 		done();
 	});
 
+	after((done) => {
+		// If we don't do this mocha hangs
+		database.end().then(done);
+	});
+
 	describe("Password auth", () => {
+
 		it("should return true if a password is valid", async () => {
 			// tslint:disable-next-line:no-unused-expression
 			expect(
@@ -87,6 +93,7 @@ describe("Authentication logic", () => {
 	});
 
 	describe("Full Authentication logic", () => {
+
 		it("should fail to authenticate a non-existant user", async () => {
 			const result = await authenticate("test123aljshasdf", "somepwd", database);
 			expect(result).to.have.property("authenticated", false);

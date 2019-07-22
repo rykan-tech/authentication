@@ -20,6 +20,3 @@ app.use(server);
 app.listen(constants.PORT, () => {
 	logger.info(`Running on port ${constants.PORT}.`);
 });
-
-// For testing
-export default app;

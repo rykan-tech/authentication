@@ -11,6 +11,7 @@ export default async function connect() {
 	logger.info("Connecting to rabbitmq...");
 	const connection = await amqplib.connect(RABBITMQ_ADDRESS);
 	const channel = await connection.createChannel();
+
 	logger.debug("Running init for modules...");
 	for (const exchange in RABBITMQ_EXCHANGES) {
 		if (RABBITMQ_EXCHANGES.hasOwnProperty(exchange)) {
@@ -34,5 +35,5 @@ export default async function connect() {
 	}
 	// Setup done! return the channel!
 	logger.info("Connected & setup for rabbitmq");
-	return channel;
+	return { channel, connection };
 }

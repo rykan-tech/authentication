@@ -22,7 +22,7 @@ import {
 	PROTOBUF_GENERAL_USER_CREATED,
 } from "./util/constants";
 import amqp_connect from "./rabbitmq/connect";
-import { Channel } from "amqplib";
+import { Channel, Connection } from "amqplib";
 const logger = createLogger("server");
 const app = express();
 const ajv = new Ajv({
@@ -84,8 +84,9 @@ const database = db_connect();
 
 // Make RabbitMQ connection
 let rabbitMqChannel: Channel;
+let rabbitMqConnection: Connection;
 amqp_connect()
-.then(channel => rabbitMqChannel = channel);
+.then(res => { rabbitMqChannel = res.channel; rabbitMqConnection = res.connection; });
 
 // Kubernetes heartbeat
 app.get("/", (req, res) => {
@@ -221,3 +222,4 @@ app.post("/signup", (req, res, next) => {
 
 // For testing
 export default app;
+export { rabbitMqConnection }; // Exported so tests can close it

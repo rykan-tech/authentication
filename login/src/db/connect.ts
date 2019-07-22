@@ -57,7 +57,7 @@ export default (): Pool => {
 	logger.warn("Environment varibales may be used in your database config");
 	// NOTE: Connection to DB is NOT tested here.
 	// Environment variable override where defined
-	return new Pool({
+	const thePool = new Pool({
 		user: process.env.RYKAN_POSTGRES_USER || dbConfig.username,
 		password: process.env.RYKAN_POSTGRES_PASSWORD || dbConfig.password,
 		database: process.env.RYKAN_POSTGRES_DATABASE || dbConfig.db_name,
@@ -66,4 +66,5 @@ export default (): Pool => {
 			parseInt(process.env.RYKAN_POSTGRES_PORT, 10) :
 			dbConfig.port,
 	});
+	return thePool;
 };

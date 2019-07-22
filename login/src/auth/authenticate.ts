@@ -44,36 +44,38 @@ export default (email: string, password: string, database: pg.Pool): Promise<Aut
 			`SELECT email, user_id, password FROM ${DB_USERS_TABLE_NAME} WHERE email=$1`, [
 				email,
 			],
-			(err, res) => {
-				if (err) { reject(err); return; }
-				if (res.rows.length <= 0) {
-					logger.error("User was not found!");
-					resolve({
-						authenticated: false,
-						userExists: false,
-					});
-					return;
-				}
-				const user: DBSchema = res.rows[0];
-				// Validate PWD
-				validatePassword(password, user.password)
-					.then((isCorrect) => {
-						if (isCorrect) {
-							logger.debug("Password is correct.");
-							resolve({
-								authenticated: true,
-								jwt: issueJWT(user),
-							});
-						} else {
-							logger.debug("Password is incorrect!");
-							resolve({
-								authenticated: false,
-								passwordCorrect: false,
-							});
-						}
-					})
-					.catch(reject);
-			},
-		);
+		)
+		.then((res) => {
+			if (res.rows.length <= 0) {
+				logger.error("User was not found!");
+				resolve({
+					authenticated: false,
+					userExists: false,
+				});
+				return; // so the pwd validation isn't done
+			}
+			const user: DBSchema = res.rows[0];
+			// Validate PWD
+			validatePassword(password, user.password)
+				.then((isCorrect) => {
+					if (isCorrect) {
+						logger.debug("Password is correct.");
+						resolve({
+							authenticated: true,
+							jwt: issueJWT(user),
+						});
+						return;
+					} else {
+						logger.debug("Password is incorrect!");
+						resolve({
+							authenticated: false,
+							passwordCorrect: false,
+						});
+						return;
+					}
+				})
+				.catch(reject);
+		})
+		.catch(reject);
 	});
 };
