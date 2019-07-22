@@ -187,7 +187,6 @@ describe("Server intergration tests", () => {
 	describe("POST /signup", () => {
 
 		it("should successfully add a user", (done) => {
-			
 			done();
 			return;
 			request(app)
