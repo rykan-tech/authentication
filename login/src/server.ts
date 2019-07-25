@@ -19,7 +19,7 @@ import {
 	SCHEMA_SIGNUP,
 	SQL_LOGINS_UNIQUNESS_EMAIL_NAME,
 	RABBITMQ_EXCHANGES,
-	PROTOBUF_GENERAL_USER_CREATED,
+	PROTOBUF_GENERAL_USER_EVENTS,
 } from "./util/constants";
 import amqp_connect from "./rabbitmq/connect";
 import { Channel, Connection } from "amqplib";
@@ -48,8 +48,8 @@ const validateSignup = ajv.compile(signupSchema);
 
 // Load Protobuf for events user create
 const userCreatedProto = protobuf
-	.loadSync(PROTOBUF_GENERAL_USER_CREATED.file)
-	.lookupType(PROTOBUF_GENERAL_USER_CREATED.name);
+	.loadSync(PROTOBUF_GENERAL_USER_EVENTS.file)
+	.lookupType(PROTOBUF_GENERAL_USER_EVENTS.name);
 
 // Add middleware
 // Helmet add several hardening features to help with security
@@ -194,11 +194,16 @@ app.post("/signup", (req, res, next) => {
 			logger.debug("Sending out a new user event (async, after req)...");
 			// Serialse
 			logger.debug("Serialising message...");
+			const messageOBJ = { uuid: user.uuid, event: 0 };
+			const verifyErr = userCreatedProto.verify(messageOBJ);
+			if (verifyErr) {
+				logger.error(`Error encountered validating data (protobuf): ${verifyErr}`);
+			}
 			// Forced any as TS defs say UInt8Array
-			const eventMsg: any = userCreatedProto.encode(userCreatedProto.create({ uuid: user.uuid })).finish();
+			const eventMsg: any = userCreatedProto.encode(userCreatedProto.create(messageOBJ)).finish();
 			rabbitMqChannel.publish(
 				RABBITMQ_EXCHANGES.userEvents.name,
-				RABBITMQ_EXCHANGES.userEvents.queues.userCreated.name,
+				"", // Doesn't matter as fanout exchange
 				eventMsg,
 			);
 			logger.debug("Message sent.");

@@ -1,10 +1,17 @@
 syntax = "proto3";
 
-package rykan.mq.general.user.events;
+package general.user.events;
+option java_package = "com.rykan.protobuf.mq.general";
+option java_outer_classname = "User";
 
 /**
- * Message format for when user made
+ * Message format for when user made.
  */
-message UserCreated {
+message UserEvent {
 	string uuid = 1; /// UUID of user
+	enum UserEventMessageType {
+		CREATE = 0;
+		DELETE = 1;
+	}
+	UserEventMessageType event = 2;
 }

@@ -3,7 +3,7 @@ package com.rykan.auth.jwt.rabbitmq;
 import org.springframework.stereotype.Component;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
@@ -12,9 +12,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import com.rykan.auth.jwt.utils.Constants;
+
 @Component
 public class UserCreated {
-	public static final String queue_name = "general.user.created"; // Also routing key
+	public static final String queue_name = "general.user." + Constants.RABBITMQ_APP_QUEUE_NAME; // Applicatiom queue for this service
 	public static final String exchange_name = "general.user";
 
   // Here, configure rabbitmq
@@ -24,13 +26,13 @@ public class UserCreated {
 	}
 
 	@Bean
-	DirectExchange exchange() {
-		return new DirectExchange(exchange_name);
+	FanoutExchange exchange() {
+		return new FanoutExchange(exchange_name);
 	}
 
 	@Bean
-	Binding binding(Queue queue, DirectExchange exchange) {
-		return BindingBuilder.bind(queue).to(exchange).with(queue_name);
+	Binding binding(Queue queue, FanoutExchange exchange) {
+		return BindingBuilder.bind(queue).to(exchange);
 	}
 
 	@Bean

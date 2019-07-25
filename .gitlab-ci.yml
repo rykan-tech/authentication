@@ -76,7 +76,7 @@ login.test:
 ### JWT ###
 jwt.test:
   stage: test
-  image: openjdk:12
+  image: maven:3-jdk-13 # Uses OpenJDK
   script:
     - cd jwt
     - ./mvnw clean install

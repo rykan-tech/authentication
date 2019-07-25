@@ -39,9 +39,9 @@ export const API_DEFS_ROOT = process.env.RYKAN_API_DEFS_DIR ?
 export const SCHEMA_SIGNUP = join(API_DEFS_ROOT, "auth/schemas/profile-signup.json");
 
 // Protobuf
-export const PROTOBUF_GENERAL_USER_CREATED = {
+export const PROTOBUF_GENERAL_USER_EVENTS = {
 	file: join(API_DEFS_ROOT, "common/protobuf/user.proto"),
-	name: "UserCreated",
+	name: "UserEvent",
 };
 
 // Salt factor
@@ -53,6 +53,8 @@ export const SQL_LOGINS_UNIQUNESS_EMAIL_NAME = "uniqueness";
 
 // Rabbitmq
 export const RABBITMQ_ADDRESS = process.env.RYKAN_AMQP_ADDRESS || "amqp://localhost";
+// Queue name for queues created for this microservice in i.e. fanout exchanges
+export const SERVER_QUEUE_ID = "general.user.service.auth.login";
 export const RABBITMQ_EXCHANGES: { [key: string]: RabbitMQExchange } = {
 	userEvents: {
 		description: "User events, such as creation & deletion",
@@ -60,15 +62,7 @@ export const RABBITMQ_EXCHANGES: { [key: string]: RabbitMQExchange } = {
 		options: {
 			durable: true,
 		},
-		type: "direct",
-		queues: {
-			userCreated: {
-				name: "general.user.created",
-				description: "For users who have been created",
-				options: {
-					durable: true,
-				},
-			},
-		},
+		type: "fanout",
+		queues: {}, // Not needed
 	},
 };
