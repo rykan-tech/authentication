@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Bean;
 import com.rykan.auth.jwt.utils.Constants;
 
 @Component
-public class UserCreated {
+public class UserEvents {
 	public static final String queue_name = "general.user." + Constants.RABBITMQ_APP_QUEUE_NAME; // Applicatiom queue for this service
 	public static final String exchange_name = "general.user";
 
@@ -46,7 +46,7 @@ public class UserCreated {
 	}
 
 	@Bean
-	MessageListenerAdapter listenerAdapter(UserCreatedRec receiver) {
+	MessageListenerAdapter listenerAdapter(UserEventRec receiver) {
 		return new MessageListenerAdapter(receiver, "receiveMessage");
 	}
 }

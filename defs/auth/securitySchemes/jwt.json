@@ -3,12 +3,12 @@
   "$schema": "http://json-schema.org/schema#",
   "id": "https://api.rykan.tech/login",
   "required": ["user", "exp", "jti"],
-  "description": "Describes the schema to be used by deserialised JSON Web Tokens.  Header not included (see RFC 7519)",
+  "description": "Describes the schema to be used by deserialised JSON Web Tokens (Access Tokens).  Header not included (see RFC 7519)",
   "properties": {
     "user": {
       "type": "object",
       "description": "Contains information about the user",
-      "required": ["email", "permissions", "user_id"],
+      "required": ["permissions", "user_id", "exp"],
       "email": {
         "type": "string",
         "description": "The Rykan email associated with the account"
