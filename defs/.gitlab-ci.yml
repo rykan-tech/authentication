@@ -1,4 +1,5 @@
 # Gitlab config
+# TODO: move to circleCI
 
 # Job 1: lint
 defs.yaml-lint:
