@@ -55,6 +55,16 @@
       <artifactId>spring-boot-starter-data-jpa</artifactId>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>annotationProcessor</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.vladmihalcea</groupId>
+      <artifactId>hibernate-types-52</artifactId>
+      <version>2.3.4</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -78,6 +88,23 @@
               </inputDirectories>
               <outputDirectory>src/main/java</outputDirectory>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- See https://developer.okta.com/blog/2019/02/20/spring-boot-with-postgresql-flyway-jsonb -->
+      <plugin>
+        <groupId>org.hibernate.orm.tooling</groupId>
+        <artifactId>hibernate-enhance-maven-plugin</artifactId>
+        <version>5.4.1.Final</version>
+        <executions>
+          <execution>
+            <configuration>
+              <failOnError>true</failOnError>
+              <enableLazyInitialization>true</enableLazyInitialization>
+            </configuration>
+            <goals>
+              <goal>enhance</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
