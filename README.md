@@ -1,4 +1,5 @@
 # Authentication
+[![Maintainability](https://api.codeclimate.com/v1/badges/184a35354b09dcffa8ae/maintainability)](https://codeclimate.com/github/rykan-tech/authentication/maintainability) [![CircleCI](https://circleci.com/gh/rykan-tech/authentication.svg?style=svg)](https://circleci.com/gh/rykan-tech/authentication)
 
 Contains the Rykan macroservice Authentication, in turn including all the microservices for authentication
 Please see the API defs for more info ([https://gitlab.com/rykan/raml-api-defs](https://gitlab.com/rykan/raml-api-defs))
