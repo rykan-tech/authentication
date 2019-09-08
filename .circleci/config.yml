@@ -59,7 +59,7 @@ jobs:
             - repo-yarn-packages-{{ checksum "package.json" }}
       - run:
           name: TSLint
-          command: yarn run tslint --project ./login --config ./tslint.json
+          command: ls && yarn run tslint --project ./login --config ./tslint.json
   
   # Login tests
   login-test:
