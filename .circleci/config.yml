@@ -8,16 +8,6 @@ orbs:
   node: circleci/node@1.1.6
 
 jobs:
-  checkout_code:
-    docker:
-      - image: circleci/node:latest
-    working_directory: ~/rykan-auth
-    steps:
-      - checkout
-      - save_cache:
-          key: repo-code-{{ .Environment.CIRCLE_SHA1 }}
-          paths:
-            - ~/rykan-auth
   # Install deps
   yarn-install:
     executor:
@@ -33,17 +23,14 @@ jobs:
 
     steps:
       # Download and cache dependencies
-      - restore_cache:
-          key: repo-code-{{ .Environment.CIRCLE_SHA1 }}
+      - checkout
       - run:
           name: Install Nodejs Dependencies
           command: yarn install
       - save_cache:
           key: repo-yarn-packages
           paths:
-            - ~/rykan-auth/login/node_modules
-            - ~/rykan-auth/jwt/node_modules
-            - ~/rykan-auth/node_modules
+            - ~/rykan-auth
   # Ts-lint
   ts-lint:
     executor:
@@ -53,9 +40,9 @@ jobs:
     working_directory: ~/rykan-auth
 
     steps:
+      - checkout
       - restore_cache:
           keys:
-            - repo-code-{{ .Environment.CIRCLE_SHA1 }}
             - repo-yarn-packages
       - run:
           name: TSLint
@@ -82,9 +69,9 @@ jobs:
     working_directory: ~/rykan-auth
 
     steps:
+      - checkout
       - restore_cache:
           keys:
-            - repo-code-{{ .Environment.CIRCLE_SHA1 }}
             - repo-yarn-packages
       - run:
           name: Provision PostgreSQL
@@ -109,10 +96,7 @@ workflows:
   version: 2
   nodejs:
     jobs:
-      - checkout_code
-      - yarn-install:
-          requires:
-            - checkout_code
+      - yarn-install
       - ts-lint:
           requires:
             - yarn-install
