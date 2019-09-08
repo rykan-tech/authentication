@@ -39,7 +39,7 @@ jobs:
           name: Install Nodejs Dependencies
           command: yarn install
       - save_cache:
-          key: repo-{{ checksum "yarn.lock" }}
+          key: repo-yarn-packages-{{ checksum "package.json" }}
           paths:
             - ~/rykan-auth/login/node_modules
             - ~/rykan-auth/jwt/node_modules
@@ -56,7 +56,7 @@ jobs:
       - restore_cache:
           keys:
             - repo-code-{{ .Environment.CIRCLE_SHA1 }}
-            - repo-{{ checksum "yarn.lock" }}
+            - repo-yarn-packages-{{ checksum "package.json" }}
       - run:
           name: TSLint
           command: yarn run tslint --project ./login --config ./tslint.json
@@ -85,7 +85,7 @@ jobs:
       - restore_cache:
           keys:
             - repo-code-{{ .Environment.CIRCLE_SHA1 }}
-            - repo-{{ checksum "yarn.lock" }}
+            - repo-yarn-packages-{{ checksum "package.json" }}
       - run:
           name: Provision PostgreSQL
           command: |
