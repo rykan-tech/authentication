@@ -15,9 +15,10 @@ jobs:
     steps:
       - checkout
       - save_cache:
-          key: repo-{{ .Environment.CIRCLE_SHA1 }}
+          key: repo-code-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ~/rykan-auth
+  # Install deps
   yarn-install:
     executor:
       name: node/default
@@ -33,22 +34,88 @@ jobs:
     steps:
       # Download and cache dependencies
       - restore_cache:
-          key: repo-{{ .Environment.CIRCLE_SHA1 }}
-      - node/with-cache:
-          dir: ~/rykan-auth
-          steps:
-              - run: yarn install
+          key: repo-code-{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Install Nodejs Dependencies
+          command: yarn install
       - save_cache:
           key: repo-{{ checksum package.json }}
           paths:
             - ~/rykan-auth/login/node_modules
             - ~/rykan-auth/jwt/node_modules
+            - ~/rykan-auth/node_modules
+  # Ts-lint
+  ts-lint:
+    executor:
+      name: node/default
+      tag: lts
 
+    working_directory: ~/rykan-auth
+
+    steps:
+      - restore_cache:
+          keys:
+            - repo-code-{{ .Environment.CIRCLE_SHA1 }}
+            - repo-{{ checksum package.json }}
+      - run:
+          name: TSLint
+          command: yarn run tslint --project ./login --config ./tslint.json
+  
+  # Login tests
+  login-test:
+    environment:
+      RYKAN_DB_ENV: ci
+      DEBIAN_FRONTEND: noninteractive
+      RYKAN_AMQP_ADDRESS: 'amqp://ci:ci@rabbitmq:5672'
+    docker:
+      - image: circleci/node:lts
+      - image: circleci/postgres:10
+        environment:
+          POSTGRES_DB: users
+          POSTGRES_USER: rykan-testing
+          POSTGRES_PASSWORD: ""
+      - image: rabbitmq:3
+        environment:
+          RABBITMQ_DEFAULT_USER: ci
+          RABBITMQ_DEFAULT_PASS: ci
+
+    working_directory: ~/rykan-auth
+
+    steps:
+      - restore_cache:
+          keys:
+            - repo-code-{{ .Environment.CIRCLE_SHA1 }}
+            - repo-{{ checksum package.json }}
+      - run:
+          name: Provision PostgreSQL
+          command: |
+            cd login
+            psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f sql/database.create.sql # Create DB
+            psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f ci/database.create.ci.sql # Change PWD
+            psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f sql/database.insert.dev.sql # Add test user
+      - run:
+          name: Generate Keys
+          command: |
+            cd login
+            openssl genrsa -out ./private/jwt-rs256-private.pem 2048
+            openssl rsa -in ./private/jwt-rs256-private.pem -pubout > ./private/jwt-rs256-public.pem
+      - run:
+          name: Test & codecov
+          command: |
+            cd login
+            yarn run coverage
+            yarn run codecov
 workflows:
   version: 2
-  login:
+  nodejs:
     jobs:
       - checkout_code
       - yarn-install:
           requires:
             - checkout_code
+      - ts-lint:
+          requires:
+            - yarn-install
+      - login-test:
+          requires:
+            - yarn-install
