@@ -92,7 +92,6 @@ jobs:
           name: Generate Keys
           working_directory: ~/rykan-auth/login
           command: |
-            cd login
             openssl genrsa -out ./private/jwt-rs256-private.pem 2048
             openssl rsa -in ./private/jwt-rs256-private.pem -pubout > ./private/jwt-rs256-public.pem
       - run:
@@ -100,8 +99,8 @@ jobs:
           working_directory: ~/rykan-auth/login
           command: |
             yarn run coverage
-            mkdir ~/rykan_auth/coverage/mocha
-            cp ~/rykan_auth/coverage/coverage-final.json ~/rykan_auth/coverage/mocha/coverage-final.json
+            mkdir -p ~/rykan_auth/coverage/mocha
+            cp -v ~/rykan_auth/login/coverage/coverage-final.json ~/rykan_auth/coverage/mocha/coverage-final.json
       - codecov/upload:
           file: "~/rykan_auth/login/coverage/coverage-final.json"
       - store_test_results:
