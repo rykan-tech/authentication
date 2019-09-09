@@ -60,7 +60,7 @@ jobs:
       DEBIAN_FRONTEND: noninteractive
       RYKAN_AMQP_ADDRESS: 'amqp://ci:ci@rabbitmq:5672'
       POSTGRES_DB: users
-      POSTGRES_USER: root
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ""
     docker:
       - image: circleci/node:lts
