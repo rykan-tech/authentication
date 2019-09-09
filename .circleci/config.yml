@@ -6,6 +6,7 @@ version: 2.1
 
 orbs:
   node: circleci/node@1.1.6
+  codecov: codecov/codecov@1.0.2
 
 jobs:
   # Install deps
@@ -51,7 +52,7 @@ jobs:
             - repo-yarn-packages-{{ checksum "login/package.json" }}
       - run:
           name: TSLint
-          command: ls && yarn run tslint --project ./login --config ./tslint.json
+          command: yarn run tslint --project ./login --config ./tslint.json
   
   # Login tests
   login-test:
@@ -89,16 +90,22 @@ jobs:
             psql -h "localhost" -U "$POSTGRES_USER" -d "$RYKAN_POSTGRES_DATABASE" -f sql/database.insert.dev.sql # Add test user
       - run:
           name: Generate Keys
+          working_directory: ~/rykan-auth/login
           command: |
             cd login
             openssl genrsa -out ./private/jwt-rs256-private.pem 2048
             openssl rsa -in ./private/jwt-rs256-private.pem -pubout > ./private/jwt-rs256-public.pem
       - run:
           name: Test & codecov
+          working_directory: ~/rykan-auth/login
           command: |
-            cd login
             yarn run coverage
-            yarn run codecov
+            mkdir ~/rykan_auth/coverage/mocha
+            cp ~/rykan_auth/coverage/coverage-final.json ~/rykan_auth/coverage/mocha/coverage-final.json
+      - codecov/upload:
+          file: {{ ~/rykan_auth/login/coverage/coverage-final.json }}
+      - store_test_results:
+          path: ~/rykan_auth/coverage
 workflows:
   version: 2
   nodejs:
