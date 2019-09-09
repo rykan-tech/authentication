@@ -59,7 +59,7 @@ jobs:
       RYKAN_AMQP_ADDRESS: 'amqp://ci:ci@rabbitmq:5672'
     docker:
       - image: circleci/node:lts
-      - image: circleci/postgres:10
+      - image: circleci/postgres:10 # Service
         environment:
           POSTGRES_DB: users
           POSTGRES_USER: rykan-testing
@@ -83,9 +83,9 @@ jobs:
           name: Provision PostgreSQL
           command: |
             cd login
-            psql -h "/var/run/postgresql/.s.PGSQL.5432" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f sql/database.create.sql # Create DB
-            psql -h "/var/run/postgresql/.s.PGSQL.5432" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f ci/database.create.ci.sql # Change PWD
-            psql -h "/var/run/postgresql/.s.PGSQL.5432" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f sql/database.insert.dev.sql # Add test user
+            psql -h "localhost" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f sql/database.create.sql # Create DB
+            psql -h "localhost" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f ci/database.create.ci.sql # Change PWD
+            psql -h "localhost" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f sql/database.insert.dev.sql # Add test user
       - run:
           name: Generate Keys
           command: |
