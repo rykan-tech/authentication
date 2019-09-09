@@ -59,13 +59,12 @@ jobs:
       RYKAN_DB_ENV: ci
       DEBIAN_FRONTEND: noninteractive
       RYKAN_AMQP_ADDRESS: 'amqp://ci:ci@rabbitmq:5672'
+      POSTGRES_DB: users
+      POSTGRES_USER: rykan-testing
+      POSTGRES_PASSWORD: ""
     docker:
       - image: circleci/node:lts
       - image: circleci/postgres:10 # Service
-        environment:
-          POSTGRES_DB: users
-          POSTGRES_USER: rykan-testing
-          POSTGRES_PASSWORD: ""
       - image: rabbitmq:3
         environment:
           RABBITMQ_DEFAULT_USER: ci
