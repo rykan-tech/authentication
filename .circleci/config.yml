@@ -103,7 +103,7 @@ jobs:
             mkdir ~/rykan_auth/coverage/mocha
             cp ~/rykan_auth/coverage/coverage-final.json ~/rykan_auth/coverage/mocha/coverage-final.json
       - codecov/upload:
-          file: {{ ~/rykan_auth/login/coverage/coverage-final.json }}
+          file: "~/rykan_auth/login/coverage/coverage-final.json"
       - store_test_results:
           path: ~/rykan_auth/coverage
 workflows:
