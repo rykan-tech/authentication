@@ -98,6 +98,7 @@ jobs:
           name: Test & codecov
           working_directory: ~/rykan-auth/login
           command: |
+            cp ./ci/database.json ./private/database.json
             yarn run coverage
             mkdir -p ~/rykan_auth/coverage/mocha
             cp -v ~/rykan_auth/login/coverage/coverage-final.json ~/rykan_auth/coverage/mocha/coverage-final.json
