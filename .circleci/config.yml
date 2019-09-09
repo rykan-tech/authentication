@@ -74,6 +74,9 @@ jobs:
           keys:
             - repo-yarn-packages
       - run:
+          name: Install apt packages
+          command: apt-get install -y postgresql openssl
+      - run:
           name: Provision PostgreSQL
           command: |
             cd login
