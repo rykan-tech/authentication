@@ -59,7 +59,7 @@ jobs:
       RYKAN_DB_ENV: ci
       DEBIAN_FRONTEND: noninteractive
       RYKAN_AMQP_ADDRESS: 'amqp://ci:ci@rabbitmq:5672'
-      POSTGRES_DB: users
+      RYKAN_POSTGRES_DATABASE: users
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ""
     docker:
@@ -84,9 +84,9 @@ jobs:
           name: Provision PostgreSQL
           command: |
             cd login
-            psql -h "localhost" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f sql/database.create.sql # Create DB
-            psql -h "localhost" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f ci/database.create.ci.sql # Change PWD
-            psql -h "localhost" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f sql/database.insert.dev.sql # Add test user
+            psql -h "localhost" -U "$POSTGRES_USER" -d "postgres" -f sql/database.create.sql # Create DB
+            psql -h "localhost" -U "$POSTGRES_USER" -d "$RYKAN_POSTGRES_DATABASE" -f ci/database.create.ci.sql # Change PWD
+            psql -h "localhost" -U "$POSTGRES_USER" -d "$RYKAN_POSTGRES_DATABASE" -f sql/database.insert.dev.sql # Add test user
       - run:
           name: Generate Keys
           command: |
