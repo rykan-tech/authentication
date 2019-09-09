@@ -31,7 +31,7 @@ jobs:
           name: Install Nodejs Dependencies
           command: yarn install
       - save_cache:
-          key: repo-yarn-packages
+          key: repo-yarn-packages-{{ checksum "login/package.json" }}
           paths:
             - ~/rykan-auth/node_modules
             - ~/rykan-auth/login/node_modules
@@ -48,7 +48,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - repo-yarn-packages
+            - repo-yarn-packages-{{ checksum "login/package.json" }}
       - run:
           name: TSLint
           command: ls && yarn run tslint --project ./login --config ./tslint.json
@@ -60,7 +60,7 @@ jobs:
       DEBIAN_FRONTEND: noninteractive
       RYKAN_AMQP_ADDRESS: 'amqp://ci:ci@rabbitmq:5672'
       POSTGRES_DB: users
-      POSTGRES_USER: rykan-testing
+      POSTGRES_USER: root
       POSTGRES_PASSWORD: ""
     docker:
       - image: circleci/node:lts
@@ -76,7 +76,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - repo-yarn-packages
+            - repo-yarn-packages-{{ checksum "login/package.json" }}
       - run:
           name: Install apt packages
           command: sudo apt-get install -y postgresql openssl
