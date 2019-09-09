@@ -83,9 +83,9 @@ jobs:
           name: Provision PostgreSQL
           command: |
             cd login
-            psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f sql/database.create.sql # Create DB
-            psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f ci/database.create.ci.sql # Change PWD
-            psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f sql/database.insert.dev.sql # Add test user
+            psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f sql/database.create.sql # Create DB
+            psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f ci/database.create.ci.sql # Change PWD
+            psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f sql/database.insert.dev.sql # Add test user
       - run:
           name: Generate Keys
           command: |
