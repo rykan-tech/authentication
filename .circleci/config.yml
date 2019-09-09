@@ -33,7 +33,9 @@ jobs:
       - save_cache:
           key: repo-yarn-packages
           paths:
-            - ~/rykan-auth
+            - ~/rykan-auth/node_modules
+            - ~/rykan-auth/login/node_modules
+            - ~/rykan-auth/defs/node_modules
   # Ts-lint
   ts-lint:
     executor:
