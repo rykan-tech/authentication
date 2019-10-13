@@ -10,8 +10,8 @@
   <groupId>com.rykan.auth</groupId>
   <artifactId>jwt</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>demo</name>
-  <description>Demo project for Spring Boot</description>
+  <name>JWT</name>
+  <description>JSON Web Tokens Issuer for Rykan</description>
   <properties>
     <java.version>1.8</java.version>
   </properties>
@@ -58,7 +58,6 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <scope>annotationProcessor</scope>
     </dependency>
     <dependency>
       <groupId>com.vladmihalcea</groupId>
@@ -72,6 +71,22 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+          <annotationProcessorPaths>
+            <annotationProcessorPaths>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>${lombok.version}</version>
+            </annotationProcessorPaths>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+
       <plugin>
         <groupId>com.github.os72</groupId>
         <artifactId>protoc-jar-maven-plugin</artifactId>

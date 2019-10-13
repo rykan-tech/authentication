@@ -13,12 +13,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Permissions implements Serializable {
+
 	@Data
 	@AllArgsConstructor
 	@NoArgsConstructor
-	public static class Mail {
-		public boolean all;
+	public static class Mail implements Serializable {
+		private boolean all;
 	}
-	
+
 	private Mail mail;
 }

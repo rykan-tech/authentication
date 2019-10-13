@@ -5,11 +5,13 @@ import java.util.concurrent.CountDownLatch;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.rykan.auth.jwt.db.Permissions;
 import com.rykan.auth.jwt.db.UserRecord;
+import com.rykan.auth.jwt.db.UserRecordsDAO;
 import com.rykan.protobuf.mq.general.User;
 import com.rykan.protobuf.mq.general.User.UserEvent.UserEventMessageType;
 
@@ -18,6 +20,12 @@ public class UserEventRec {
 
 	private CountDownLatch latch = new CountDownLatch(1);
 	Logger logger = LoggerFactory.getLogger(UserEventRec.class);
+
+	public UserEventRec(UserRecordsDAO providedUserRecordsDAO) {
+		this.userRecordsDAO = providedUserRecordsDAO;
+	}
+
+	private final UserRecordsDAO userRecordsDAO;
 
 	public void receiveMessage(byte[] message) {
 		logger.info("Got message from RabbitMQ for a user event.");
@@ -36,6 +44,8 @@ public class UserEventRec {
 				"starter",
 				new Permissions(new Permissions.Mail(true))
 			);
+			userRecordsDAO.save(user);
+			logger.info("The user should have been added.");
 		}
 		latch.countDown();
 	}
