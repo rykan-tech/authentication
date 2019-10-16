@@ -1,0 +1,92 @@
+name: Login CI
+
+on: [push]
+
+jobs:
+  install_deps:
+    name: Install Dependencies
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Run yarn
+      run: yarn
+      env:
+        CI: true
+  
+  tslint:
+    name: Run TSLint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x]
+    needs: install_deps
+
+    steps:
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Runs TSLint
+      run: yarn run tslint --project ./login --config ./tslint.json
+  
+  test:
+    name: Runs Unit Tests
+    runs-on: ubuntu-latest
+    needs: install_deps
+    strategy:
+      matrix:
+        node-version: [10.x]
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432/tcp
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    env:
+      RYKAN_DB_ENV: ci
+      DEBIAN_FRONTEND: noninteractive
+      RYKAN_AMQP_ADDRESS: 'amqp://ci:ci@rabbitmq:5672'
+      RYKAN_POSTGRES_DATABASE: users
+      RYKAN_POSTGRES_PORT: ${{ job.services.postgres.ports['5432'] }}
+      RYKAN_POSTGRES_HOST: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    
+    steps:
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Provision DB
+      run: |
+        cd login
+        psql -h "postgres" -U "$POSTGRES_USER" -d "postgres" -f sql/database.create.sql # Create DB
+        psql -h "postgres" -U "$POSTGRES_USER" -d "$RYKAN_POSTGRES_DATABASE" -f ci/database.create.ci.sql # Change PWD
+        psql -h "postgres" -U "$POSTGRES_USER" -d "$RYKAN_POSTGRES_DATABASE" -f sql/database.insert.dev.sql # Add test user
+    - name: Generate keys
+      run: |
+        openssl genrsa -out ./private/jwt-rs256-private.pem 2048
+        openssl rsa -in ./private/jwt-rs256-private.pem -pubout > ./private/jwt-rs256-public.pem
+    - name: Test & codecov
+      run: |
+        cp ./ci/database.json ./private/database.json
+        yarn run coverage
+        mkdir -p ~/rykan_auth/coverage/mocha
+        cp -v ~/rykan_auth/login/coverage/coverage-final.json ~/rykan_auth/coverage/mocha/coverage-final.json
+
+
