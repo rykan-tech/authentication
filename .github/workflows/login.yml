@@ -53,7 +53,7 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
         ports:
-          - 5432/tcp
+          - 5432:5432
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
@@ -62,7 +62,6 @@ jobs:
       DEBIAN_FRONTEND: noninteractive
       RYKAN_AMQP_ADDRESS: 'amqp://ci:ci@rabbitmq:5672'
       RYKAN_POSTGRES_DATABASE: users
-      RYKAN_POSTGRES_PORT: ${{ job.services.postgres.ports['5432'] }}
       RYKAN_POSTGRES_HOST: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -83,6 +82,8 @@ jobs:
         openssl genrsa -out ./private/jwt-rs256-private.pem 2048
         openssl rsa -in ./private/jwt-rs256-private.pem -pubout > ./private/jwt-rs256-public.pem
     - name: Test & codecov
+      env:
+        RYKAN_POSTGRES_PORT: ${{ job.services.postgres.ports['5432'] }}
       run: |
         cp ./ci/database.json ./private/database.json
         yarn run coverage
