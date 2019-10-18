@@ -37,6 +37,8 @@ describe("Database tests", () => {
 		it("should retrieve the production env if RYKAN_DB_ENV is not specified & NODE_ENV is production", () => {
 			process.env.RYKAN_DB_ENV = "";
 			process.env.NODE_ENV = "production";
+			// tslint:disable-next-line: no-console
+			console.log("1 " + process.env.RYKAN_DB_ENV);
 			const res: Pool2 = connect();
 			const config: DBConfig = require(DB_CONFIG_PATH);
 			expect(res.options.user).to.equal(config.production.username);
@@ -49,6 +51,8 @@ describe("Database tests", () => {
 		it("should retrieve the development env if RYKAN_DB_ENV is not specified & NODE_ENV is development", () => {
 			process.env.RYKAN_DB_ENV = "";
 			process.env.NODE_ENV = "development";
+			// tslint:disable-next-line: no-console
+			console.log("2 " + process.env.RYKAN_DB_ENV);
 			const res: Pool2 = connect();
 			const config: DBConfig = require(DB_CONFIG_PATH);
 			expect(res.options.user).to.equal(config.development.username);
@@ -60,6 +64,8 @@ describe("Database tests", () => {
 
 		it("should retrieve a specific env if RYKAN_DB_ENV is specified, regardless of NODE_ENV", () => {
 			process.env.RYKAN_DB_ENV = "test";
+			// tslint:disable-next-line: no-console
+			console.log("3 " + process.env.RYKAN_DB_ENV);
 			const res: Pool2 = connect();
 			const config: DBConfig = require(DB_CONFIG_PATH);
 			expect(res.options.user).to.equal(config.test.username);

@@ -84,12 +84,20 @@ jobs:
           name: Install apt packages
           command: sudo apt-get install -y openssl postgresql-client
       - run:
+          name: install dockerize
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          environment:
+            DOCKERIZE_VERSION: v0.3.0
+      - run:
           name: Provision PostgreSQL
           command: |
             cd login
             psql -h "localhost" -U "$POSTGRES_USER" -d "postgres" -f sql/database.create.sql # Create DB
             psql -h "localhost" -U "$POSTGRES_USER" -d "$RYKAN_POSTGRES_DATABASE" -f ci/database.create.ci.sql # Change PWD
             psql -h "localhost" -U "$POSTGRES_USER" -d "$RYKAN_POSTGRES_DATABASE" -f sql/database.insert.dev.sql # Add test user
+      - run:
+          name: Wait for RabbitMQ
+          command: dockerize -wait tcp://localhost:5672 -timeout 1m
       - run:
           name: Generate Keys
           working_directory: ~/rykan-auth/login
