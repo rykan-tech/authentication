@@ -5,10 +5,22 @@
   "required": ["user", "exp", "jti"],
   "description": "Describes the schema to be used by deserialised JSON Web Tokens (Access Tokens).  Header not included (see RFC 7519)",
   "properties": {
+    "exp": {
+      "type": "number",
+      "description": "Time in Unix time when the token expires"
+    },
+    "iat": {
+      "type": "number",
+      "description": "Time in Unix time for when the token was issued"
+    },
+    "jti": {
+      "type": "string",
+      "description": "Unique ID for the JWT"
+    },
     "user": {
       "type": "object",
       "description": "Contains information about the user",
-      "required": ["permissions", "user_id", "exp"],
+      "required": ["permissions", "user_id"],
       "email": {
         "type": "string",
         "description": "The Rykan email associated with the account"
@@ -21,18 +33,6 @@
         "type": "string",
         "description": "The UUID for the user"
       }
-    },
-    "exp": {
-      "type": "number",
-      "description": "Time in Unix time when the token expires"
-    },
-    "iat": {
-      "type": "number",
-      "description": "Time in Unix time for when the token was issued"
-    },
-    "jti": {
-      "type": "string",
-      "description": "Unique ID for the JWT"
     }
   }
 }

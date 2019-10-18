@@ -57,7 +57,6 @@ jobs:
   # Login tests
   login-test:
     environment:
-      RYKAN_DB_ENV: ci
       DEBIAN_FRONTEND: noninteractive
       RYKAN_AMQP_ADDRESS: 'amqp://ci:ci@rabbitmq:5672'
       RYKAN_POSTGRES_DATABASE: users
@@ -65,7 +64,10 @@ jobs:
       POSTGRES_PASSWORD: ""
     docker:
       - image: circleci/node:lts
-      - image: circleci/postgres:10 # Service
+      - image: circleci/postgres:10-alpine-postgis-ram # Service
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ""
       - image: rabbitmq:3
         environment:
           RABBITMQ_DEFAULT_USER: ci
@@ -80,7 +82,7 @@ jobs:
             - repo-yarn-packages-{{ checksum "login/package.json" }}
       - run:
           name: Install apt packages
-          command: sudo apt-get install -y postgresql openssl
+          command: sudo apt-get install -y openssl
       - run:
           name: Provision PostgreSQL
           command: |
@@ -98,6 +100,7 @@ jobs:
           name: Test & codecov
           working_directory: ~/rykan-auth/login
           command: |
+            export RYKAN_DB_ENV=ci
             cp ./ci/database.json ./private/database.json
             yarn run coverage
             mkdir -p ~/rykan_auth/coverage/mocha

@@ -70,6 +70,7 @@ describe("Authentication logic", () => {
 			// Hacky typecast
 			const jwtPayload: any = decode(jwtStr); // Decoded
 			const jwt: JWTSchema = jwtPayload;
+			console.log(jwt);
 
 			// tslint:disable-next-line: no-unused-expression
 			expect(jwtStr).to.be.string;
