@@ -5,7 +5,7 @@ import { join } from "path";
 import { RabbitMQExchange } from "./interfaces";
 
 export const PORT = 2000;
-export const LOG_LEVEL = process.env.NODE_ENV === "development" ?
+export const LOG_LEVEL = (process.env.NODE_ENV === "development" || process.env.RYKAN_DEBUG === "true") ?
 	"debug" :
 	(process.env.NODE_ENV === "test" ? "none" : "info");
 

@@ -11,7 +11,7 @@
     "start": "node ./lib/index.js",
     "nodemon": "cross-env DEBUG=rykan:* nodemon --inspect ./lib/index.js",
     "test": "cross-env TS_NODE_FILES=true RYKAN_LOG_SILENT=true mocha -r ts-node/register test/**/*.ts",
-    "coverage": "cross-env TS_NODE_FILES=true DEBUG=rykan:* nyc mocha -r ts-node/register test/**/*.ts"
+    "coverage": "cross-env TS_NODE_FILES=true RYKAN_DEBUG=true nyc mocha -r ts-node/register test/**/*.ts"
   },
   "nyc": {
     "include": [
