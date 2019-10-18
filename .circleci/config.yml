@@ -82,7 +82,7 @@ jobs:
             - repo-yarn-packages-{{ checksum "login/package.json" }}
       - run:
           name: Install apt packages
-          command: sudo apt-get install -y openssl
+          command: sudo apt-get install -y openssl postgresql-client
       - run:
           name: Provision PostgreSQL
           command: |
