@@ -84,7 +84,7 @@ jobs:
           name: Install apt packages
           command: sudo apt-get install -y openssl postgresql-client
       - run:
-          name: install dockerize
+          name: Install dockerize
           command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
           environment:
             DOCKERIZE_VERSION: v0.3.0
@@ -110,8 +110,12 @@ jobs:
           command: |
             export RYKAN_DB_ENV=ci
             cp ./ci/database.json ./private/database.json
-            sleep 10
             yarn run coverage
+            ls . || true
+            ls ./coverage || true
+            ls ../coverage || true
+            ls ./login || true
+            ls ./login/coverage || true
             mkdir -p ~/rykan_auth/coverage/mocha
             cp -v ~/rykan_auth/login/coverage/coverage-final.json ~/rykan_auth/coverage/mocha/coverage-final.json
       - codecov/upload:
