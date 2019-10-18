@@ -111,13 +111,9 @@ jobs:
             export RYKAN_DB_ENV=ci
             cp ./ci/database.json ./private/database.json
             yarn run coverage
-            ls . || true
-            ls ./coverage || true
-            ls ../coverage || true
-            ls ./login || true
-            ls ./login/coverage || true
+            ls ./coverage
             mkdir -p ~/rykan_auth/coverage/mocha
-            cp -v ~/rykan_auth/login/coverage/coverage-final.json ~/rykan_auth/coverage/mocha/coverage-final.json
+            cp -v ./coverage/coverage-final.json ~/rykan_auth/coverage/mocha/coverage-final.json
       - codecov/upload:
           file: "~/rykan_auth/login/coverage/coverage-final.json"
       - store_test_results:
