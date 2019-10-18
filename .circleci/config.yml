@@ -58,7 +58,7 @@ jobs:
   login-test:
     environment:
       DEBIAN_FRONTEND: noninteractive
-      RYKAN_AMQP_ADDRESS: 'amqp://ci:ci@127.0.0.1:5672'
+      RYKAN_AMQP_ADDRESS: 'amqp://ci:ci@localhost:5672'
       RYKAN_POSTGRES_DATABASE: users
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ""
@@ -72,9 +72,6 @@ jobs:
         environment:
           RABBITMQ_DEFAULT_USER: ci
           RABBITMQ_DEFAULT_PASS: ci
-        ports:
-          - "15672:15672"
-          - "5672:5672"
 
     working_directory: ~/rykan-auth
 
