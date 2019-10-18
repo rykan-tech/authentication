@@ -59,7 +59,7 @@ jobs:
     environment:
       DEBIAN_FRONTEND: noninteractive
       RYKAN_AMQP_ADDRESS: 'amqp://ci:ci@localhost:5672'
-      RYKAN_POSTGRES_DATABASE: users
+      RYKAN_POSTGRES_DATABASE_TO_USE: users # _TO_USE needed to prevent overlap with Rykan env for setting the db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ""
     docker:
@@ -93,8 +93,8 @@ jobs:
           command: |
             cd login
             psql -h "localhost" -U "$POSTGRES_USER" -d "postgres" -f sql/database.create.sql # Create DB
-            psql -h "localhost" -U "$POSTGRES_USER" -d "$RYKAN_POSTGRES_DATABASE" -f ci/database.create.ci.sql # Change PWD
-            psql -h "localhost" -U "$POSTGRES_USER" -d "$RYKAN_POSTGRES_DATABASE" -f sql/database.insert.dev.sql # Add test user
+            psql -h "localhost" -U "$POSTGRES_USER" -d "$RYKAN_POSTGRES_DATABASE_TO_USE" -f ci/database.create.ci.sql # Change PWD
+            psql -h "localhost" -U "$POSTGRES_USER" -d "$RYKAN_POSTGRES_DATABASE_TO_USE" -f sql/database.insert.dev.sql # Add test user
       - run:
           name: Wait for RabbitMQ
           command: dockerize -wait tcp://localhost:5672 -timeout 1m
