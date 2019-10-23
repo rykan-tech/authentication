@@ -128,7 +128,7 @@ jobs:
   jwt:
     working_directory: ~/rykan-auth
     docker:
-      - image: openjdk:13
+      - image: maven:3-jdk-12
     steps:
       - checkout
       - restore_cache:
