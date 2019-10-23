@@ -9,6 +9,10 @@ orbs:
   codecov: codecov/codecov@1.0.2
 
 jobs:
+
+  ######
+  # LOGIN
+  ######
   # Install deps
   yarn-install:
     executor:
@@ -19,9 +23,7 @@ jobs:
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
       # - image: circleci/mongo:3.4.4
-
     working_directory: ~/rykan-auth
-
     steps:
       # Download and cache dependencies
       - checkout
@@ -53,7 +55,7 @@ jobs:
       - run:
           name: TSLint
           command: yarn run tslint --project ./login --config ./tslint.json
-  
+
   # Login tests
   login-test:
     environment:
@@ -118,6 +120,36 @@ jobs:
           file: "~/rykan_auth/coverage/mocha/coverage-final.json"
       - store_test_results:
           path: ~/rykan_auth/coverage
+  
+
+  ######
+  # JWT
+  ######
+  jwt:
+    working_directory: ~/rykan-jwt
+    docker:
+      - image: circleci/openjdk:13-jdk-stretch
+    steps:
+      - checkout
+      - restore_cache:
+          key: repo-authenication-jwt-{{ checksum "./jwt/pom.xml" }}
+      - run:
+          name: Get dependencies
+          working_directory: ~/rykan-auth/jwt
+          command: mvn dependency:go-offline # gets the project dependencies
+      - save_cache: # saves the project dependencies
+          paths:
+            - ~/.m2
+          key: repo-authenication-jwt-{{ checksum "./jwt/pom.xml" }}
+
+      - store_test_results: # uploads the test metadata from the `target/surefire-reports` directory so that it can show up in the CircleCI dashboard. 
+          # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
+          path: jwt/target/surefire-reports
+      
+      - store_artifacts: # store the uberjar as an artifact
+          # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
+          path: jwt/target/jwt-0.0.1-SNAPSHOT.jar
+
 workflows:
   version: 2
   nodejs:
@@ -129,4 +161,7 @@ workflows:
       - login-test:
           requires:
             - yarn-install
+  java:
+    jobs:
+      - jwt
 # TRIGGER
