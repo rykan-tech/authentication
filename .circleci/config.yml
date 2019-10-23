@@ -128,7 +128,7 @@ jobs:
   jwt:
     working_directory: ~/rykan-auth
     docker:
-      - image: circleci/openjdk:13-jdk-buster
+      - image: circleci/openjdk:12-jdk-buster
     steps:
       - checkout
       - restore_cache:
