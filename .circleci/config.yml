@@ -126,7 +126,7 @@ jobs:
   # JWT
   ######
   jwt:
-    working_directory: ~/rykan-jwt
+    working_directory: ~/rykan-auth
     docker:
       - image: circleci/openjdk:13-jdk-buster
     steps:
