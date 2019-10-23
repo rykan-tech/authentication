@@ -128,7 +128,7 @@ jobs:
   jwt:
     working_directory: ~/rykan-jwt
     docker:
-      - image: circleci/openjdk:13-jdk-stretch
+      - image: circleci/openjdk:13-jdk-buster
     steps:
       - checkout
       - restore_cache:
