@@ -137,15 +137,17 @@ jobs:
           name: Get dependencies
           working_directory: ~/rykan-auth/jwt
           command: mvn dependency:go-offline # gets the project dependencies
+      - run: 
+          name: Run Tests
+          working_directory: ~/rykan-auth/jwt
+          command: mvn package # run the actual tests
       - save_cache: # saves the project dependencies
           paths:
             - ~/.m2
           key: repo-authenication-jwt-{{ checksum "./jwt/pom.xml" }}
-
       - store_test_results: # uploads the test metadata from the `target/surefire-reports` directory so that it can show up in the CircleCI dashboard. 
           # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
           path: jwt/target/surefire-reports
-      
       - store_artifacts: # store the uberjar as an artifact
           # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
           path: jwt/target/jwt-0.0.1-SNAPSHOT.jar
