@@ -15,9 +15,8 @@ jobs:
   ######
   # Install deps
   yarn-install:
-    executor:
-      name: node/default
-      tag: lts
+    docker:
+      - image: circleci/node:lts
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -41,9 +40,8 @@ jobs:
             - ~/rykan-auth/defs/node_modules
   # Ts-lint
   ts-lint:
-    executor:
-      name: node/default
-      tag: lts
+    docker:
+      - image: circleci/node:lts
 
     working_directory: ~/rykan-auth
 
