@@ -45,7 +45,7 @@ jobs:
       RYKAN_DB_ENV: ci
       DEBIAN_FRONTEND: noninteractive
       FINAL_POSTGRES_DATABASE: users # Create by the intial provisioning script
-      RYKAN_POSTGRES_HOST: localhost
+      POSTGRES_HOST: localhost
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       PGPASSWORD: postgres
@@ -69,9 +69,9 @@ jobs:
     - name: Provision DB for tests
       run: |
         cd login
-        psql -h "$RYKAN_POSTGRES_HOST" -U "$POSTGRES_USER" -d "postgres" -f sql/database.create.sql # Create DB
-        psql -h "$RYKAN_POSTGRES_HOST" -U "$POSTGRES_USER" -d "$FINAL_POSTGRES_DATABASE" -f ci/database.create.ci.sql # Change PWD
-        psql -h "$RYKAN_POSTGRES_HOST" -U "$POSTGRES_USER" -d "$FINAL_POSTGRES_DATABASE" -f sql/database.insert.dev.sql # Add test user
+        psql -h "$POSTGRES_HOST" -U "$POSTGRES_USER" -d "postgres" -f sql/database.create.sql # Create DB
+        psql -h "$POSTGRES_HOST" -U "$POSTGRES_USER" -d "$FINAL_POSTGRES_DATABASE" -f ci/database.create.ci.sql # Change PWD
+        psql -h "$POSTGRES_HOST" -U "$POSTGRES_USER" -d "$FINAL_POSTGRES_DATABASE" -f sql/database.insert.dev.sql # Add test user
     - name: Generate JWT signing keys for tests
       run: |
         cd login
