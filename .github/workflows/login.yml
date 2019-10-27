@@ -1,26 +1,10 @@
-name: Login microservice CI
+name: Nodejs CI
 
 on: [push]
 
 jobs:
-  tslint:
-    name: TSLint
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js
-      uses: actions/setup-node@v1
-    - run: ls
-    - name: TSLint
-      uses: mooyoul/tslint-actions@v1.1.1
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        project: login
-        config: ./tslint.json
-  
-  install_deps:
-    name: Tests
+  login_ci:
+    name: Login Microservice - Linter & Tests
     runs-on: ubuntu-latest
 
     strategy:
@@ -67,6 +51,13 @@ jobs:
       run: yarn
       env:
         CI: true
+    
+    - name: TSLint
+      uses: mooyoul/tslint-actions@v1.1.1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        project: ./login
+        config: ./tslint.json
     
     - name: Provision DB for tests
       run: |
