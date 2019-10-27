@@ -30,7 +30,6 @@ jobs:
     env:
       RYKAN_DB_ENV: ci
       DEBIAN_FRONTEND: noninteractive
-      RYKAN_AMQP_ADDRESS: 'amqp://localhost:${{ job.services.rabbitmq.ports[5672] }}'
       RYKAN_POSTGRES_DATABASE: users
       RYKAN_POSTGRES_HOST: postgres
       POSTGRES_USER: postgres
@@ -74,6 +73,7 @@ jobs:
     - name: Test & codecov
       env:
         RYKAN_POSTGRES_PORT: ${{ job.services.postgres.ports['5432'] }}
+        RYKAN_AMQP_ADDRESS: 'amqp://localhost:${{ job.services.rabbitmq.ports[5672] }}'
       run: |
         cd login
         cp ./ci/database.json ./private/database.json
