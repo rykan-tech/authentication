@@ -84,7 +84,7 @@ jobs:
       run: |
         cd login
         cp ./ci/database.json ./private/database.json
-        yarn run cross-env TS_NODE_FILES=true nyc mocha -r ts-node/register test/**/*.ts
+        yarn run coverage
     - name: Upload coverage to codecov
       uses: codecov/codecov-action@v1.0.3
       with:
