@@ -38,7 +38,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: Install APT dependencies
-      run: apt install -y postgresql-client
+      run: sudo apt install -y postgresql-client
     
     - name: Run yarn
       run: yarn
