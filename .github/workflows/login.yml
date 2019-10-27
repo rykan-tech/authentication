@@ -21,11 +21,16 @@ jobs:
           - 5432:5432
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      rabbitmq:
+        image: rabbitmq:latest
+        ports:
+          - 5672/tcp
+        options: --health-cmd "rabbitmqctl node_health_check" --health-interval 10s --health-timeout 5s --health-retries 5
     
     env:
       RYKAN_DB_ENV: ci
       DEBIAN_FRONTEND: noninteractive
-      RYKAN_AMQP_ADDRESS: 'amqp://ci:ci@rabbitmq:5672'
+      RYKAN_AMQP_ADDRESS: 'amqp://localhost:${{ job.services.rabbitmq.ports[5672] }}'
       RYKAN_POSTGRES_DATABASE: users
       RYKAN_POSTGRES_HOST: postgres
       POSTGRES_USER: postgres
@@ -63,11 +68,13 @@ jobs:
         psql -h "localhost" -U "$POSTGRES_USER" -d "$RYKAN_POSTGRES_DATABASE" -f sql/database.insert.dev.sql # Add test user
     - name: Generate JWT signing keys for tests
       run: |
+        cd login
         openssl genrsa -out ./private/jwt-rs256-private.pem 2048
         openssl rsa -in ./private/jwt-rs256-private.pem -pubout > ./private/jwt-rs256-public.pem
     - name: Test & codecov
       env:
         RYKAN_POSTGRES_PORT: ${{ job.services.postgres.ports['5432'] }}
       run: |
+        cd login
         cp ./ci/database.json ./private/database.json
         yarn run coverage
