@@ -37,6 +37,9 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - name: Install APT dependencies
+      run: apt install -y postgresql-client
+    
     - name: Run yarn
       run: yarn
       env:
@@ -55,7 +58,7 @@ jobs:
         psql -h "postgres" -U "$POSTGRES_USER" -d "postgres" -f sql/database.create.sql # Create DB
         psql -h "postgres" -U "$POSTGRES_USER" -d "$RYKAN_POSTGRES_DATABASE" -f ci/database.create.ci.sql # Change PWD
         psql -h "postgres" -U "$POSTGRES_USER" -d "$RYKAN_POSTGRES_DATABASE" -f sql/database.insert.dev.sql # Add test user
-    - name: Generate keys for tests
+    - name: Generate JWT signing keys for tests
       run: |
         openssl genrsa -out ./private/jwt-rs256-private.pem 2048
         openssl rsa -in ./private/jwt-rs256-private.pem -pubout > ./private/jwt-rs256-public.pem
