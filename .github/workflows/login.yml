@@ -1,0 +1,67 @@
+name: Login CI
+
+on: [push]
+
+jobs:
+  install_deps:
+    name: Lint & Test
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x]
+    
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    
+    env:
+      RYKAN_DB_ENV: ci
+      DEBIAN_FRONTEND: noninteractive
+      RYKAN_AMQP_ADDRESS: 'amqp://ci:ci@rabbitmq:5672'
+      RYKAN_POSTGRES_DATABASE: users
+      RYKAN_POSTGRES_HOST: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Run yarn
+      run: yarn
+      env:
+        CI: true
+    
+    - name: TSLint
+      uses: mooyoul/tslint-actions@v1.1.1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        pattern: 'src/**/*.ts'
+        project: ./login
+    
+    - name: Provision DB for tests
+      run: |
+        cd login
+        psql -h "postgres" -U "$POSTGRES_USER" -d "postgres" -f sql/database.create.sql # Create DB
+        psql -h "postgres" -U "$POSTGRES_USER" -d "$RYKAN_POSTGRES_DATABASE" -f ci/database.create.ci.sql # Change PWD
+        psql -h "postgres" -U "$POSTGRES_USER" -d "$RYKAN_POSTGRES_DATABASE" -f sql/database.insert.dev.sql # Add test user
+    - name: Generate keys for tests
+      run: |
+        openssl genrsa -out ./private/jwt-rs256-private.pem 2048
+        openssl rsa -in ./private/jwt-rs256-private.pem -pubout > ./private/jwt-rs256-public.pem
+    - name: Test & codecov
+      env:
+        RYKAN_POSTGRES_PORT: ${{ job.services.postgres.ports['5432'] }}
+      run: |
+        cp ./ci/database.json ./private/database.json
+        yarn run coverage
