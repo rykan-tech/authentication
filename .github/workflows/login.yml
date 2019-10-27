@@ -31,7 +31,7 @@ jobs:
       RYKAN_DB_ENV: ci
       DEBIAN_FRONTEND: noninteractive
       RYKAN_POSTGRES_DATABASE: users
-      RYKAN_POSTGRES_HOST: postgres
+      RYKAN_POSTGRES_HOST: localhost
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       PGPASSWORD: postgres
@@ -62,9 +62,9 @@ jobs:
     - name: Provision DB for tests
       run: |
         cd login
-        psql -h "localhost" -U "$POSTGRES_USER" -d "postgres" -f sql/database.create.sql # Create DB
-        psql -h "localhost" -U "$POSTGRES_USER" -d "$RYKAN_POSTGRES_DATABASE" -f ci/database.create.ci.sql # Change PWD
-        psql -h "localhost" -U "$POSTGRES_USER" -d "$RYKAN_POSTGRES_DATABASE" -f sql/database.insert.dev.sql # Add test user
+        psql -h "$RYKAN_POSTGRES_HOST" -U "$POSTGRES_USER" -d "postgres" -f sql/database.create.sql # Create DB
+        psql -h "$RYKAN_POSTGRES_HOST" -U "$POSTGRES_USER" -d "$RYKAN_POSTGRES_DATABASE" -f ci/database.create.ci.sql # Change PWD
+        psql -h "$RYKAN_POSTGRES_HOST" -U "$POSTGRES_USER" -d "$RYKAN_POSTGRES_DATABASE" -f sql/database.insert.dev.sql # Add test user
     - name: Generate JWT signing keys for tests
       run: |
         cd login
@@ -78,3 +78,9 @@ jobs:
         cd login
         cp ./ci/database.json ./private/database.json
         yarn run coverage
+    - name: Upload coverage to codecov
+      uses: codecov/codecov-action@v1.0.3
+      with:
+        token: ${{secrets.CODECOV_TOKEN}}
+        file: ./login/coverage/lcov.info
+        flags: unittests
