@@ -1,8 +1,22 @@
-name: Nodejs CI
+name: Login Microservice CI
 
 on: [push]
 
 jobs:
+  tslint:
+    name: Runs TSLint
+    runs-on: ubuntu-latest
+
+    container:
+      image:  node:latest
+
+    steps:
+      - name: TSLint
+        uses: mooyoul/tslint-actions@v1.1.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          project: ./login
+  
   install_deps:
     name: Login microservice
     runs-on: ubuntu-latest
@@ -52,13 +66,6 @@ jobs:
       env:
         CI: true
     
-    - name: TSLint
-      uses: mooyoul/tslint-actions@v1.1.1
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        pattern: 'src/**/*.ts'
-        project: ./login
-    
     - name: Provision DB for tests
       run: |
         cd login
@@ -70,6 +77,7 @@ jobs:
         cd login
         openssl genrsa -out ./private/jwt-rs256-private.pem 2048
         openssl rsa -in ./private/jwt-rs256-private.pem -pubout > ./private/jwt-rs256-public.pem
+    
     - name: Test & codecov
       env:
         RYKAN_POSTGRES_PORT: ${{ job.services.postgres.ports['5432'] }}
