@@ -11,6 +11,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: Use Node.js
       uses: actions/setup-node@v1
+    - run: ls
     - name: TSLint
       uses: mooyoul/tslint-actions@v1.1.1
       with:
@@ -80,7 +81,7 @@ jobs:
     
     - name: Test & codecov
       env:
-        RYKAN_POSTGRES_PORT: ${{ job.services.postgres.ports['5432'] }}
+        # RYKAN_POSTGRES_PORT: ${{ job.services.postgres.ports['5432'] }}
         RYKAN_AMQP_ADDRESS: 'amqp://localhost:${{ job.services.rabbitmq.ports[5672] }}'
       run: |
         cd login
