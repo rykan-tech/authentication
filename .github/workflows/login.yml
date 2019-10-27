@@ -16,7 +16,7 @@ jobs:
       uses: mooyoul/tslint-actions@v1.1.1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        project: ./login
+        project: /github/workspace/login
   
   install_deps:
     name: Tests
