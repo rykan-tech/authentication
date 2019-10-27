@@ -1,16 +1,15 @@
-name: Login Microservice CI
+name: Login microservice CI
 
 on: [push]
 
 jobs:
   tslint:
-    name: Runs TSLint
+    name: TSLint
     runs-on: ubuntu-latest
 
-    container:
-      image:  node:latest
-
     steps:
+      - name: Use Node.js
+        uses: actions/setup-node@v1
       - name: TSLint
         uses: mooyoul/tslint-actions@v1.1.1
         with:
@@ -18,7 +17,7 @@ jobs:
           project: ./login
   
   install_deps:
-    name: Login microservice
+    name: Tests
     runs-on: ubuntu-latest
 
     strategy:
@@ -44,7 +43,7 @@ jobs:
     env:
       RYKAN_DB_ENV: ci
       DEBIAN_FRONTEND: noninteractive
-      RYKAN_POSTGRES_DATABASE: users
+      FINAL_POSTGRES_DATABASE: users # Create by the intial provisioning script
       RYKAN_POSTGRES_HOST: localhost
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -70,8 +69,8 @@ jobs:
       run: |
         cd login
         psql -h "$RYKAN_POSTGRES_HOST" -U "$POSTGRES_USER" -d "postgres" -f sql/database.create.sql # Create DB
-        psql -h "$RYKAN_POSTGRES_HOST" -U "$POSTGRES_USER" -d "$RYKAN_POSTGRES_DATABASE" -f ci/database.create.ci.sql # Change PWD
-        psql -h "$RYKAN_POSTGRES_HOST" -U "$POSTGRES_USER" -d "$RYKAN_POSTGRES_DATABASE" -f sql/database.insert.dev.sql # Add test user
+        psql -h "$RYKAN_POSTGRES_HOST" -U "$POSTGRES_USER" -d "$FINAL_POSTGRES_DATABASE" -f ci/database.create.ci.sql # Change PWD
+        psql -h "$RYKAN_POSTGRES_HOST" -U "$POSTGRES_USER" -d "$FINAL_POSTGRES_DATABASE" -f sql/database.insert.dev.sql # Add test user
     - name: Generate JWT signing keys for tests
       run: |
         cd login
