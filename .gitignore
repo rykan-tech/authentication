@@ -89,3 +89,6 @@ typings/
 
 # Built stuff
 lib
+
+# PRIVATE
+private

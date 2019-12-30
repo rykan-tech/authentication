@@ -75,9 +75,12 @@ jobs:
         psql -h "$POSTGRES_HOST" -U "$POSTGRES_USER" -d "$FINAL_POSTGRES_DATABASE" -f sql/database.insert.dev.sql # Add test user
     - name: Generate JWT signing keys for tests
       run: |
-        cd login
+        mkdir -p common/private
+        cd common
         openssl genrsa -out ./private/jwt-rs256-private.pem 2048
         openssl rsa -in ./private/jwt-rs256-private.pem -pubout > ./private/jwt-rs256-public.pem
+        cd ..
+        ./scripts/common-ln.sh
     
     - name: Test & codecov
       env:
