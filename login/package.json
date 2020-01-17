@@ -47,7 +47,7 @@
     "morgan": "^1.9.1",
     "pg": "^7.11.0",
     "protobufjs": "^6.8.8",
-    "uuid": "^3.3.2",
+    "uuid": "^3.4.0",
     "winston": "^3.2.1"
   },
   "devDependencies": {
